@@ -4,6 +4,56 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>api-scorecard — OpenAPI AI Readiness Scorer</title>
+
+  <!-- Google Analytics GA4 — replace G-XXXXXXXXXX with your Measurement ID -->
+  <!-- Get one free at: https://analytics.google.com → Admin → Create Property -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){ dataLayer.push(arguments); }
+    gtag('js', new Date());
+    gtag('config', 'G-XXXXXXXXXX');
+
+    // Lightweight click tracker — fires a GA4 event + records in localStorage
+    function track(category, label) {
+      gtag('event', 'click', { event_category: category, event_label: label });
+      try {
+        var key = 'sc_clicks';
+        var data = JSON.parse(localStorage.getItem(key) || '{}');
+        var k = category + ':' + label;
+        data[k] = (data[k] || 0) + 1;
+        localStorage.setItem(key, JSON.stringify(data));
+        refreshStats();
+      } catch(e) {}
+    }
+
+    // Keyboard shortcut: press Shift+S to see click stats overlay
+    document.addEventListener('keydown', function(e) {
+      if (e.shiftKey && e.key === 'S') toggleStats();
+    });
+    function toggleStats() {
+      var el = document.getElementById('stats-overlay');
+      if (!el) return;
+      el.style.display = el.style.display === 'none' ? 'block' : 'none';
+      if (el.style.display === 'block') refreshStats();
+    }
+    function refreshStats() {
+      var el = document.getElementById('stats-body');
+      if (!el || document.getElementById('stats-overlay').style.display === 'none') return;
+      try {
+        var data = JSON.parse(localStorage.getItem('sc_clicks') || '{}');
+        var rows = Object.entries(data).sort((a,b) => b[1]-a[1]);
+        if (!rows.length) { el.innerHTML = '<p style="color:#8b949e">No clicks recorded yet.</p>'; return; }
+        el.innerHTML = rows.map(([k,v]) =>
+          '<div style="display:flex;justify-content:space-between;padding:.3rem 0;border-bottom:1px solid #30363d">'
+          + '<span style="color:#e6edf3;font-size:.85rem">' + k + '</span>'
+          + '<span style="color:#58a6ff;font-weight:700;min-width:2rem;text-align:right">' + v + '</span>'
+          + '</div>'
+        ).join('');
+      } catch(e) {}
+    }
+  </script>
+
   <style>
     :root {
       --bg: #0d1117;
@@ -322,6 +372,105 @@
 
     /* DIVIDER */
     hr { border: none; border-top: 1px solid var(--border); margin: 1.5rem 0; }
+
+    /* MOBILE */
+    @media (max-width: 640px) {
+      nav { padding: .75rem 1rem; flex-wrap: wrap; gap: .5rem; }
+      .nav-links { display: none; }
+      .nav-links.open { display: flex; flex-direction: column; width: 100%; gap: .5rem; padding: .5rem 0; }
+      .nav-links a { margin-left: 0; padding: .4rem 0; border-top: 1px solid var(--border); }
+      .hamburger {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+        cursor: pointer;
+        padding: .3rem;
+        background: none;
+        border: none;
+        margin-left: auto;
+      }
+      .hamburger span { display: block; width: 20px; height: 2px; background: var(--text); border-radius: 2px; transition: all .2s; }
+
+      .hero { margin: 3rem auto 2.5rem; }
+      h1 { font-size: 2rem; }
+      .hero p { font-size: 1rem; }
+
+      .terminal-body { font-size: .75rem; padding: .9rem; }
+      .term-box { white-space: pre-wrap; word-break: break-all; }
+
+      section { margin-bottom: 4rem; }
+      .grid-2 { grid-template-columns: 1fr; }
+
+      .dim-bar-wrap { display: none; }
+
+      .grades-row { gap: .5rem; }
+      .grade-pill { min-width: 120px; }
+
+      table { font-size: .8rem; }
+      thead th, tbody td { padding: .6rem .75rem; }
+
+      #stats-overlay { width: calc(100vw - 2rem); right: 1rem; bottom: 1rem; }
+    }
+
+    @media (min-width: 641px) {
+      .hamburger { display: none; }
+      .nav-links { display: flex !important; }
+    }
+
+    /* CONTACT */
+    .contact-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1rem;
+    }
+    .contact-link {
+      display: flex;
+      align-items: center;
+      gap: .85rem;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: .75rem;
+      padding: 1.1rem 1.4rem;
+      text-decoration: none;
+      color: var(--text);
+      transition: border-color .2s, transform .1s;
+    }
+    .contact-link:hover { border-color: var(--accent); transform: translateY(-2px); }
+    .contact-link .cl-icon { font-size: 1.5rem; }
+    .contact-link .cl-title { font-weight: 600; font-size: .95rem; }
+    .contact-link .cl-sub { font-size: .8rem; color: var(--muted); }
+
+    /* STATS OVERLAY */
+    #stats-overlay {
+      display: none;
+      position: fixed;
+      bottom: 1.5rem;
+      right: 1.5rem;
+      width: 340px;
+      background: var(--surface);
+      border: 1px solid var(--accent);
+      border-radius: .75rem;
+      padding: 1.25rem;
+      z-index: 9999;
+      box-shadow: 0 8px 32px rgba(0,0,0,.5);
+    }
+    #stats-overlay h4 {
+      font-size: .85rem;
+      color: var(--accent);
+      margin-bottom: .75rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    #stats-overlay .close-btn {
+      cursor: pointer;
+      color: var(--muted);
+      font-size: 1rem;
+      background: none;
+      border: none;
+      padding: 0;
+    }
+    #stats-overlay .close-btn:hover { color: var(--text); }
   </style>
 </head>
 <body>
@@ -329,12 +478,16 @@
 <!-- NAV -->
 <nav>
   <span class="nav-logo">$ api-scorecard</span>
-  <div>
-    <a href="#features">Features</a>
-    <a href="#dimensions">Dimensions</a>
-    <a href="#compare">vs Jentic</a>
-    <a href="#install">Install</a>
-    <a href="https://github.com/SheepSeb/reuse_api">GitHub</a>
+  <button class="hamburger" aria-label="Toggle menu" onclick="document.querySelector('.nav-links').classList.toggle('open')">
+    <span></span><span></span><span></span>
+  </button>
+  <div class="nav-links">
+    <a href="#features" onclick="document.querySelector('.nav-links').classList.remove('open')">Features</a>
+    <a href="#dimensions" onclick="document.querySelector('.nav-links').classList.remove('open')">Dimensions</a>
+    <a href="#compare" onclick="document.querySelector('.nav-links').classList.remove('open')">vs Jentic</a>
+    <a href="#install" onclick="document.querySelector('.nav-links').classList.remove('open')">Install</a>
+    <a href="#contact" onclick="document.querySelector('.nav-links').classList.remove('open')">Contact</a>
+    <a href="https://github.com/SheepSeb/cli-jentic" onclick="track('nav','github')">GitHub</a>
   </div>
 </nav>
 
@@ -346,8 +499,8 @@
     <strong>api-scorecard</strong> scores your OpenAPI spec across 6 dimensions and gives it a letter grade — so you know exactly what to fix before connecting it to an LLM.
   </p>
   <div class="cta-group">
-    <a class="btn btn-primary" href="#install">Get Started</a>
-    <a class="btn btn-secondary" href="https://github.com/SheepSeb/reuse_api">View on GitHub</a>
+    <a class="btn btn-primary" href="#install" onclick="track('hero','get-started')">Get Started</a>
+    <a class="btn btn-secondary" href="https://github.com/SheepSeb/cli-jentic" onclick="track('hero','view-github')">View on GitHub</a>
   </div>
 </div>
 
@@ -603,8 +756,8 @@
   <div class="grid grid-2">
     <div>
       <div class="install-tabs">
-        <button class="tab-btn active" onclick="showTab('uv')">uv (recommended)</button>
-        <button class="tab-btn" onclick="showTab('pip')">pip</button>
+        <button class="tab-btn active" onclick="showTab('uv');track('install','tab-uv')">uv (recommended)</button>
+        <button class="tab-btn" onclick="showTab('pip');track('install','tab-pip')">pip</button>
       </div>
       <div id="tab-uv" class="code-block">
         <span class="comment"># Install</span><br/>
@@ -656,14 +809,63 @@
   </div>
 </section>
 
+<!-- CONTACT -->
+<section id="contact">
+  <div class="section-label">Get in touch</div>
+  <h2>Contact</h2>
+  <p class="subtitle">Questions, feedback, or want to contribute? Reach out on any of these channels.</p>
+  <div class="contact-grid">
+    <a class="contact-link" href="https://github.com/SheepSeb" target="_blank" rel="noopener" onclick="track('contact','github-profile')">
+      <span class="cl-icon">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.3 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 21.795 24 17.295 24 12c0-6.63-5.37-12-12-12"/></svg>
+      </span>
+      <div>
+        <div class="cl-title">GitHub</div>
+        <div class="cl-sub">@SheepSeb</div>
+      </div>
+    </a>
+    <a class="contact-link" href="https://github.com/SheepSeb/cli-jentic/issues/new" target="_blank" rel="noopener" onclick="track('contact','open-issue')">
+      <span class="cl-icon">🐛</span>
+      <div>
+        <div class="cl-title">Open an Issue</div>
+        <div class="cl-sub">Bug reports &amp; feature requests</div>
+      </div>
+    </a>
+    <a class="contact-link" href="https://github.com/SheepSeb/cli-jentic/discussions" target="_blank" rel="noopener" onclick="track('contact','discussions')">
+      <span class="cl-icon">💬</span>
+      <div>
+        <div class="cl-title">Discussions</div>
+        <div class="cl-sub">Questions &amp; ideas</div>
+      </div>
+    </a>
+    <a class="contact-link" href="https://github.com/SheepSeb/cli-jentic/fork" target="_blank" rel="noopener" onclick="track('contact','fork')">
+      <span class="cl-icon">🍴</span>
+      <div>
+        <div class="cl-title">Fork &amp; Contribute</div>
+        <div class="cl-sub">PRs welcome</div>
+      </div>
+    </a>
+  </div>
+</section>
+
+<!-- STATS OVERLAY (press Shift+S to open) -->
+<div id="stats-overlay">
+  <h4>
+    Click analytics (local)
+    <button class="close-btn" onclick="toggleStats()">✕</button>
+  </h4>
+  <div id="stats-body"><p style="color:#8b949e;font-size:.85rem">No clicks recorded yet.</p></div>
+  <p style="color:#8b949e;font-size:.75rem;margin-top:.75rem">Stored in localStorage · GA4 events also sent · Press Shift+S to close</p>
+</div>
+
 <!-- FOOTER -->
 <footer>
   <p>
     <strong>api-scorecard</strong> — Open source under MIT.
     Built for the age of AI agents.<br/>
-    <a href="https://github.com/SheepSeb/reuse_api">GitHub</a> &nbsp;·&nbsp;
-    <a href="https://github.com/SheepSeb/reuse_api/issues">Issues</a> &nbsp;·&nbsp;
-    <a href="https://github.com/SheepSeb/reuse_api/blob/main/README.md">Docs</a>
+    <a href="https://github.com/SheepSeb/cli-jentic" onclick="track('footer','github')">GitHub</a> &nbsp;·&nbsp;
+    <a href="https://github.com/SheepSeb/cli-jentic/issues" onclick="track('footer','issues')">Issues</a> &nbsp;·&nbsp;
+    <a href="https://github.com/SheepSeb/cli-jentic/blob/web/README.md" onclick="track('footer','docs')">Docs</a>
   </p>
 </footer>
 
