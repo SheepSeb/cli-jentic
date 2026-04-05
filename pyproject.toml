@@ -1,0 +1,24 @@
+[project]
+name = "reuse-api"
+version = "0.1.0"
+description = "OpenAPI AI Readiness Scorecard CLI"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "typer[all]>=0.9",
+    "pyyaml>=6",
+    "pydantic>=2",
+    "openapi-spec-validator>=0.7",
+    "flask>=3",
+    "requests>=2.31",
+]
+
+[project.scripts]
+api-scorecard = "scorecard.cli:app"
+
+[tool.hatch.build.targets.wheel]
+packages = ["scorecard", "sandbox"]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"

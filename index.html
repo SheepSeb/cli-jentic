@@ -1,0 +1,681 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>api-scorecard — OpenAPI AI Readiness Scorer</title>
+  <style>
+    :root {
+      --bg: #0d1117;
+      --surface: #161b22;
+      --surface2: #1c2128;
+      --border: #30363d;
+      --accent: #58a6ff;
+      --accent2: #3fb950;
+      --accent3: #f78166;
+      --text: #e6edf3;
+      --muted: #8b949e;
+      --grade-a: #3fb950;
+      --grade-b: #58a6ff;
+      --grade-c: #d29922;
+      --grade-f: #f78166;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", sans-serif;
+      line-height: 1.6;
+    }
+
+    /* NAV */
+    nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1rem 2rem;
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      background: rgba(13,17,23,.9);
+      backdrop-filter: blur(8px);
+      z-index: 100;
+    }
+    .nav-logo {
+      font-family: "SF Mono", "Fira Code", monospace;
+      font-weight: 700;
+      color: var(--accent);
+      font-size: 1.1rem;
+    }
+    nav a {
+      color: var(--muted);
+      text-decoration: none;
+      font-size: .9rem;
+      margin-left: 1.5rem;
+      transition: color .2s;
+    }
+    nav a:hover { color: var(--text); }
+
+    /* HERO */
+    .hero {
+      max-width: 800px;
+      margin: 6rem auto 4rem;
+      padding: 0 2rem;
+      text-align: center;
+    }
+    .badge {
+      display: inline-block;
+      background: rgba(88,166,255,.15);
+      color: var(--accent);
+      border: 1px solid rgba(88,166,255,.3);
+      border-radius: 2rem;
+      padding: .3rem .9rem;
+      font-size: .8rem;
+      font-family: "SF Mono", monospace;
+      margin-bottom: 1.5rem;
+      letter-spacing: .05em;
+    }
+    h1 {
+      font-size: clamp(2.2rem, 5vw, 3.5rem);
+      font-weight: 800;
+      line-height: 1.15;
+      margin-bottom: 1.25rem;
+    }
+    h1 span { color: var(--accent); }
+    .hero p {
+      font-size: 1.2rem;
+      color: var(--muted);
+      max-width: 620px;
+      margin: 0 auto 2.5rem;
+    }
+    .cta-group { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: .5rem;
+      padding: .7rem 1.5rem;
+      border-radius: .5rem;
+      font-weight: 600;
+      font-size: .95rem;
+      text-decoration: none;
+      transition: opacity .2s, transform .1s;
+      cursor: pointer;
+      border: none;
+    }
+    .btn:hover { opacity: .85; transform: translateY(-1px); }
+    .btn-primary { background: var(--accent); color: #0d1117; }
+    .btn-secondary {
+      background: transparent;
+      color: var(--text);
+      border: 1px solid var(--border);
+    }
+
+    /* TERMINAL */
+    .terminal-wrap {
+      max-width: 700px;
+      margin: 0 auto 5rem;
+      padding: 0 2rem;
+    }
+    .terminal {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: .75rem;
+      overflow: hidden;
+      font-family: "SF Mono", "Fira Code", "Cascadia Code", monospace;
+      font-size: .82rem;
+    }
+    .terminal-bar {
+      background: var(--surface2);
+      padding: .6rem 1rem;
+      display: flex;
+      align-items: center;
+      gap: .5rem;
+      border-bottom: 1px solid var(--border);
+    }
+    .dot { width: 12px; height: 12px; border-radius: 50%; }
+    .dot-red { background: #ff5f57; }
+    .dot-yellow { background: #ffbd2e; }
+    .dot-green { background: #28ca41; }
+    .terminal-title { margin-left: auto; margin-right: auto; color: var(--muted); font-size: .8rem; }
+    .terminal-body { padding: 1.25rem; line-height: 1.7; }
+    .term-prompt { color: var(--accent2); }
+    .term-cmd { color: var(--text); }
+    .term-out { color: var(--muted); }
+    .term-grade { color: var(--grade-a); font-weight: 700; }
+    .term-grade-f { color: var(--grade-f); font-weight: 700; }
+    .term-grade-c { color: var(--grade-c); font-weight: 700; }
+    .term-box {
+      border: 1px solid var(--border);
+      border-radius: .4rem;
+      padding: .6rem .9rem;
+      margin: .5rem 0;
+      white-space: pre;
+      overflow-x: auto;
+    }
+
+    /* FEATURES */
+    section { max-width: 1000px; margin: 0 auto 6rem; padding: 0 2rem; }
+    .section-label {
+      text-transform: uppercase;
+      letter-spacing: .12em;
+      font-size: .75rem;
+      color: var(--accent);
+      margin-bottom: .75rem;
+      font-weight: 700;
+    }
+    h2 {
+      font-size: clamp(1.6rem, 3vw, 2.2rem);
+      margin-bottom: 1rem;
+      font-weight: 700;
+    }
+    .subtitle { color: var(--muted); margin-bottom: 2.5rem; font-size: 1.05rem; }
+
+    .grid { display: grid; gap: 1.25rem; }
+    .grid-3 { grid-template-columns: repeat(auto-fit, minmax(270px, 1fr)); }
+    .grid-2 { grid-template-columns: repeat(auto-fit, minmax(360px, 1fr)); }
+
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: .75rem;
+      padding: 1.5rem;
+      transition: border-color .2s;
+    }
+    .card:hover { border-color: var(--accent); }
+    .card-icon { font-size: 1.6rem; margin-bottom: .75rem; }
+    .card h3 { font-size: 1rem; margin-bottom: .5rem; font-weight: 600; }
+    .card p { color: var(--muted); font-size: .9rem; }
+
+    /* DIMENSIONS */
+    .dim-grid { display: grid; gap: .75rem; }
+    .dim-row {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: .5rem;
+      padding: .9rem 1.2rem;
+    }
+    .dim-name { flex: 1; font-size: .9rem; font-weight: 500; }
+    .dim-weight {
+      font-family: monospace;
+      color: var(--accent);
+      font-size: .85rem;
+      min-width: 2.5rem;
+      text-align: right;
+    }
+    .dim-bar-wrap {
+      width: 120px;
+      height: 6px;
+      background: var(--surface2);
+      border-radius: 3px;
+      overflow: hidden;
+    }
+    .dim-bar { height: 100%; border-radius: 3px; background: var(--accent); }
+
+    /* COMPARISON TABLE */
+    .compare-wrap { overflow-x: auto; }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: .9rem;
+    }
+    thead th {
+      padding: .9rem 1.2rem;
+      text-align: left;
+      border-bottom: 2px solid var(--border);
+      font-size: .85rem;
+      text-transform: uppercase;
+      letter-spacing: .06em;
+      color: var(--muted);
+    }
+    thead th.highlight { color: var(--accent); }
+    tbody tr {
+      border-bottom: 1px solid var(--border);
+      transition: background .15s;
+    }
+    tbody tr:hover { background: var(--surface2); }
+    tbody td {
+      padding: .85rem 1.2rem;
+      vertical-align: top;
+    }
+    td.feature { font-weight: 500; color: var(--text); }
+    td.yes { color: var(--accent2); font-weight: 600; }
+    td.no { color: var(--muted); }
+    td.partial { color: var(--grade-c); }
+    .check::before { content: "✓ "; }
+    .cross::before { content: "✗ "; color: var(--muted); }
+    .dash::before { content: "~ "; color: var(--grade-c); }
+
+    /* GRADES */
+    .grades-row {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+    .grade-pill {
+      display: flex;
+      align-items: center;
+      gap: .6rem;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: .5rem;
+      padding: .7rem 1.2rem;
+      flex: 1;
+      min-width: 160px;
+    }
+    .grade-letter {
+      font-size: 2rem;
+      font-weight: 900;
+      font-family: monospace;
+      line-height: 1;
+    }
+    .gl-a { color: var(--grade-a); }
+    .gl-b { color: var(--grade-b); }
+    .gl-c { color: var(--grade-c); }
+    .gl-f { color: var(--grade-f); }
+    .grade-info small { display: block; color: var(--muted); font-size: .8rem; }
+
+    /* INSTALL */
+    .install-tabs { display: flex; gap: .5rem; margin-bottom: 1rem; }
+    .tab-btn {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      color: var(--muted);
+      padding: .4rem .9rem;
+      border-radius: .4rem;
+      font-family: monospace;
+      font-size: .85rem;
+      cursor: pointer;
+      transition: all .2s;
+    }
+    .tab-btn.active {
+      background: var(--accent);
+      color: var(--bg);
+      border-color: var(--accent);
+    }
+    .code-block {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: .5rem;
+      padding: 1rem 1.25rem;
+      font-family: "SF Mono", "Fira Code", monospace;
+      font-size: .85rem;
+      line-height: 1.7;
+      overflow-x: auto;
+      position: relative;
+    }
+    .code-block .comment { color: var(--muted); }
+    .code-block .cmd { color: var(--accent2); }
+    .code-block .arg { color: var(--accent); }
+
+    /* FOOTER */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 2rem;
+      text-align: center;
+      color: var(--muted);
+      font-size: .85rem;
+    }
+    footer a { color: var(--accent); text-decoration: none; }
+
+    /* DIVIDER */
+    hr { border: none; border-top: 1px solid var(--border); margin: 1.5rem 0; }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <span class="nav-logo">$ api-scorecard</span>
+  <div>
+    <a href="#features">Features</a>
+    <a href="#dimensions">Dimensions</a>
+    <a href="#compare">vs Jentic</a>
+    <a href="#install">Install</a>
+    <a href="https://github.com/SheepSeb/reuse_api">GitHub</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="badge">Open Source CLI</div>
+  <h1>Is your API ready for<br><span>AI agents?</span></h1>
+  <p>
+    <strong>api-scorecard</strong> scores your OpenAPI spec across 6 dimensions and gives it a letter grade — so you know exactly what to fix before connecting it to an LLM.
+  </p>
+  <div class="cta-group">
+    <a class="btn btn-primary" href="#install">Get Started</a>
+    <a class="btn btn-secondary" href="https://github.com/SheepSeb/reuse_api">View on GitHub</a>
+  </div>
+</div>
+
+<!-- TERMINAL DEMO -->
+<div class="terminal-wrap">
+  <div class="terminal">
+    <div class="terminal-bar">
+      <div class="dot dot-red"></div>
+      <div class="dot dot-yellow"></div>
+      <div class="dot dot-green"></div>
+      <span class="terminal-title">api-scorecard demo</span>
+    </div>
+    <div class="terminal-body">
+      <div><span class="term-prompt">$</span> <span class="term-cmd">api-scorecard score openapi.yaml</span></div>
+      <div class="term-box">
+╭─ API AI Readiness Scorecard ──────────────────────────────╮
+│  Task Manager API  v1.0.0                                  │
+│  openapi.yaml                                              │
+│                                                            │
+│  Overall Score: <span class="term-grade-f">42.3</span>/100  Grade: <span class="term-grade-f">F</span>                         │
+╰────────────────────────────────────────────────────────────╯</div>
+      <br/>
+      <div class="term-out">Dimensions:</div>
+      <div class="term-out">  Foundational Compliance     <span class="term-grade-c">75.0</span>/100  C  ██████████████░░</div>
+      <div class="term-out">  Developer Experience        <span class="term-grade-f">38.5</span>/100  F  ███████░░░░░░░░░</div>
+      <div class="term-out">  AI-Readiness & Agent UX     <span class="term-grade-f">31.2</span>/100  F  ██████░░░░░░░░░░</div>
+      <div class="term-out">  Agent Usability             <span class="term-grade-f">28.0</span>/100  F  █████░░░░░░░░░░░</div>
+      <div class="term-out">  Security & Governance       <span class="term-grade-f">15.0</span>/100  F  ███░░░░░░░░░░░░░</div>
+      <div class="term-out">  AI Discoverability          <span class="term-grade-f">33.3</span>/100  F  ██████░░░░░░░░░░</div>
+      <br/>
+      <div class="term-out">Issues &amp; Recommendations</div>
+      <div class="term-out">  <span style="color:#f78166">✗</span> 4/6 operations lack descriptive intent (&gt;30 char description)</div>
+      <div class="term-out">  <span style="color:#d29922">!</span> 5/6 operations have no documented error responses (4xx/5xx)</div>
+      <div class="term-out">  <span style="color:#f78166">✗</span> Security schemes defined but operations not secured</div>
+      <br/>
+      <div><span class="term-prompt">$</span> <span class="term-cmd">api-scorecard score openapi.yaml <span class="arg">--json</span> | jq '.overall_score'</span></div>
+      <div class="term-out">42.3</div>
+    </div>
+  </div>
+</div>
+
+<!-- FEATURES -->
+<section id="features">
+  <div class="section-label">Why api-scorecard</div>
+  <h2>Ship APIs that AI agents<br>can actually use</h2>
+  <p class="subtitle">Most OpenAPI specs are written for humans. AI agents have different needs — and most specs fail silently.</p>
+  <div class="grid grid-3">
+    <div class="card">
+      <div class="card-icon">⚡</div>
+      <h3>Instant feedback</h3>
+      <p>Run against any OpenAPI 3.x spec and get a scored report in milliseconds. No account, no upload, no waiting.</p>
+    </div>
+    <div class="card">
+      <div class="card-icon">🤖</div>
+      <h3>AI-first scoring</h3>
+      <p>Dimensions are weighted for what LLMs and agents actually need: semantic operation IDs, error schemas, intent descriptions.</p>
+    </div>
+    <div class="card">
+      <div class="card-icon">🎯</div>
+      <h3>Actionable issues</h3>
+      <p>Every failing check includes the exact JSON path and a plain-English explanation so you know what to fix and where.</p>
+    </div>
+    <div class="card">
+      <div class="card-icon">🔌</div>
+      <h3>CI/CD ready</h3>
+      <p>Structured exit codes (0 pass / 1 error / 2 fail) and <code>--json</code> output make it trivial to gate deploys on API quality.</p>
+    </div>
+    <div class="card">
+      <div class="card-icon">📦</div>
+      <h3>Zero dependencies on infra</h3>
+      <p>Pure Python CLI. Runs locally, in Docker, or in any CI runner. Your spec never leaves your machine.</p>
+    </div>
+    <div class="card">
+      <div class="card-icon">📊</div>
+      <h3>Letter grades at a glance</h3>
+      <p>A single A–F grade tells the whole story. Drill down per-dimension to understand exactly where quality is lost.</p>
+    </div>
+  </div>
+</section>
+
+<!-- DIMENSIONS -->
+<section id="dimensions">
+  <div class="section-label">Scoring model</div>
+  <h2>6 dimensions, 100 points</h2>
+  <p class="subtitle">Each dimension targets a distinct quality axis that determines whether an AI agent can discover, call, and reason about your API.</p>
+  <div class="dim-grid">
+    <div class="dim-row">
+      <div class="card-icon" style="font-size:1.1rem;min-width:1.4rem">🏗️</div>
+      <div class="dim-name">Foundational Compliance <small style="color:var(--muted)">OpenAPI version, info object, valid paths</small></div>
+      <div class="dim-weight">20%</div>
+      <div class="dim-bar-wrap"><div class="dim-bar" style="width:100%"></div></div>
+    </div>
+    <div class="dim-row">
+      <div class="card-icon" style="font-size:1.1rem;min-width:1.4rem">👩‍💻</div>
+      <div class="dim-name">Developer Experience <small style="color:var(--muted)">Operation IDs, summaries, examples</small></div>
+      <div class="dim-weight">15%</div>
+      <div class="dim-bar-wrap"><div class="dim-bar" style="width:75%"></div></div>
+    </div>
+    <div class="dim-row">
+      <div class="card-icon" style="font-size:1.1rem;min-width:1.4rem">🤖</div>
+      <div class="dim-name">AI-Readiness &amp; Agent Experience <small style="color:var(--muted)">Descriptions, error schemas, response detail</small></div>
+      <div class="dim-weight">20%</div>
+      <div class="dim-bar-wrap"><div class="dim-bar" style="width:100%"></div></div>
+    </div>
+    <div class="dim-row">
+      <div class="card-icon" style="font-size:1.1rem;min-width:1.4rem">🧠</div>
+      <div class="dim-name">Agent Usability <small style="color:var(--muted)">Semantic IDs, tags, parameter schemas</small></div>
+      <div class="dim-weight">20%</div>
+      <div class="dim-bar-wrap"><div class="dim-bar" style="width:100%"></div></div>
+    </div>
+    <div class="dim-row">
+      <div class="card-icon" style="font-size:1.1rem;min-width:1.4rem">🔐</div>
+      <div class="dim-name">Security &amp; Governance <small style="color:var(--muted)">Auth schemes, operation security, docs</small></div>
+      <div class="dim-weight">15%</div>
+      <div class="dim-bar-wrap"><div class="dim-bar" style="width:75%"></div></div>
+    </div>
+    <div class="dim-row">
+      <div class="card-icon" style="font-size:1.1rem;min-width:1.4rem">🔍</div>
+      <div class="dim-name">AI Discoverability <small style="color:var(--muted)">API description, tags, external docs</small></div>
+      <div class="dim-weight">10%</div>
+      <div class="dim-bar-wrap"><div class="dim-bar" style="width:50%"></div></div>
+    </div>
+  </div>
+  <br/>
+  <div class="grades-row">
+    <div class="grade-pill">
+      <div class="grade-letter gl-a">A</div>
+      <div class="grade-info"><strong>90–100</strong><small>Agent-ready</small></div>
+    </div>
+    <div class="grade-pill">
+      <div class="grade-letter gl-b">B</div>
+      <div class="grade-info"><strong>80–89</strong><small>Near ready</small></div>
+    </div>
+    <div class="grade-pill">
+      <div class="grade-letter gl-c">C</div>
+      <div class="grade-info"><strong>70–79</strong><small>Needs work</small></div>
+    </div>
+    <div class="grade-pill">
+      <div class="grade-letter" style="color:var(--grade-c)">D</div>
+      <div class="grade-info"><strong>60–69</strong><small>Significant gaps</small></div>
+    </div>
+    <div class="grade-pill">
+      <div class="grade-letter gl-f">F</div>
+      <div class="grade-info"><strong>&lt; 60</strong><small>Not ready</small></div>
+    </div>
+  </div>
+</section>
+
+<!-- COMPARISON -->
+<section id="compare">
+  <div class="section-label">Comparison</div>
+  <h2>api-scorecard vs Jentic</h2>
+  <p class="subtitle">Both tools aim to make APIs work better with AI — but they solve fundamentally different problems at different points in your workflow.</p>
+  <div class="compare-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th style="width:35%">Feature</th>
+          <th class="highlight" style="width:32.5%">api-scorecard</th>
+          <th style="width:32.5%">Jentic</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="feature">Primary purpose</td>
+          <td class="yes"><span class="check"></span>Score &amp; improve OpenAPI specs for AI-readiness</td>
+          <td class="partial"><span class="dash"></span>Discover &amp; execute APIs at runtime for AI agents</td>
+        </tr>
+        <tr>
+          <td class="feature">When you use it</td>
+          <td class="yes"><span class="check"></span>Before &amp; during API development (design time)</td>
+          <td class="no"><span class="cross"></span>When building AI agents that call APIs (runtime)</td>
+        </tr>
+        <tr>
+          <td class="feature">Input</td>
+          <td class="yes"><span class="check"></span>Local OpenAPI / Swagger YAML or JSON file</td>
+          <td class="no"><span class="cross"></span>Natural language query to discover APIs in registry</td>
+        </tr>
+        <tr>
+          <td class="feature">Output</td>
+          <td class="yes"><span class="check"></span>Scored report with letter grade + actionable fixes</td>
+          <td class="no"><span class="cross"></span>Executable workflow / API call ready for an agent</td>
+        </tr>
+        <tr>
+          <td class="feature">Open Source</td>
+          <td class="yes"><span class="check"></span>Fully open source (MIT)</td>
+          <td class="partial"><span class="dash"></span>SDK open source, platform is SaaS</td>
+        </tr>
+        <tr>
+          <td class="feature">Runs locally</td>
+          <td class="yes"><span class="check"></span>100% offline — spec never leaves your machine</td>
+          <td class="no"><span class="cross"></span>Requires internet access to Jentic cloud registry</td>
+        </tr>
+        <tr>
+          <td class="feature">CI/CD integration</td>
+          <td class="yes"><span class="check"></span>Exit codes + JSON output, drop into any pipeline</td>
+          <td class="no"><span class="cross"></span>Not designed for CI quality gates</td>
+        </tr>
+        <tr>
+          <td class="feature">Actionable fix guidance</td>
+          <td class="yes"><span class="check"></span>Exact JSON path + plain-English recommendation per issue</td>
+          <td class="no"><span class="cross"></span>No spec improvement guidance</td>
+        </tr>
+        <tr>
+          <td class="feature">Multi-dimension scoring</td>
+          <td class="yes"><span class="check"></span>6 weighted dimensions with per-dimension grades</td>
+          <td class="no"><span class="cross"></span>No quality scoring model</td>
+        </tr>
+        <tr>
+          <td class="feature">API execution / calling</td>
+          <td class="no"><span class="cross"></span>Analysis only — does not call your API</td>
+          <td class="yes"><span class="check"></span>Core feature — finds and executes API calls for agents</td>
+        </tr>
+        <tr>
+          <td class="feature">API registry / discovery</td>
+          <td class="no"><span class="cross"></span>Works on a single spec you provide</td>
+          <td class="yes"><span class="check"></span>Searches a large registry of third-party APIs</td>
+        </tr>
+        <tr>
+          <td class="feature">Requires account / login</td>
+          <td class="yes"><span class="check"></span>No — zero signup, just install and run</td>
+          <td class="partial"><span class="dash"></span>Free tier available, full registry needs API key</td>
+        </tr>
+        <tr>
+          <td class="feature">Installation</td>
+          <td class="yes"><span class="check"></span><code>pip install reuse-api</code></td>
+          <td class="no"><span class="cross"></span><code>pip install jentic</code></td>
+        </tr>
+        <tr>
+          <td class="feature">Best used by</td>
+          <td class="yes"><span class="check"></span>API developers, platform engineers, DevOps teams</td>
+          <td class="no"><span class="cross"></span>AI agent developers integrating third-party APIs</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <br/>
+  <div class="card" style="background:rgba(88,166,255,.06);border-color:rgba(88,166,255,.3)">
+    <h3 style="color:var(--accent);margin-bottom:.5rem">They're complementary, not competing</h3>
+    <p style="color:var(--muted)">
+      Use <strong style="color:var(--text)">api-scorecard</strong> to verify your OpenAPI spec is high-quality and AI-ready.
+      Then use <strong style="color:var(--text)">Jentic</strong> to let agents discover and call it at runtime.
+      A higher api-scorecard grade means Jentic agents can use your API more reliably — fewer hallucinations, better tool selection.
+    </p>
+  </div>
+</section>
+
+<!-- INSTALL -->
+<section id="install">
+  <div class="section-label">Get started</div>
+  <h2>Up and running in 30 seconds</h2>
+  <p class="subtitle">No account. No config. Just point it at an OpenAPI spec.</p>
+  <div class="grid grid-2">
+    <div>
+      <div class="install-tabs">
+        <button class="tab-btn active" onclick="showTab('uv')">uv (recommended)</button>
+        <button class="tab-btn" onclick="showTab('pip')">pip</button>
+      </div>
+      <div id="tab-uv" class="code-block">
+        <span class="comment"># Install</span><br/>
+        <span class="cmd">uv pip install</span> <span class="arg">-e git+https://github.com/SheepSeb/reuse_api</span><br/>
+        <br/>
+        <span class="comment"># Score your spec</span><br/>
+        <span class="cmd">api-scorecard score</span> <span class="arg">path/to/openapi.yaml</span><br/>
+        <br/>
+        <span class="comment"># Try the built-in demo</span><br/>
+        <span class="cmd">api-scorecard demo</span>
+      </div>
+      <div id="tab-pip" class="code-block" style="display:none">
+        <span class="comment"># Clone &amp; install</span><br/>
+        <span class="cmd">git clone</span> <span class="arg">https://github.com/SheepSeb/reuse_api</span><br/>
+        <span class="cmd">pip install</span> <span class="arg">-e ./reuse_api</span><br/>
+        <br/>
+        <span class="comment"># Score your spec</span><br/>
+        <span class="cmd">api-scorecard score</span> <span class="arg">path/to/openapi.yaml</span><br/>
+        <br/>
+        <span class="comment"># JSON output for CI</span><br/>
+        <span class="cmd">api-scorecard score</span> <span class="arg">openapi.yaml --json</span>
+      </div>
+    </div>
+    <div>
+      <div class="card" style="height:100%">
+        <h3>Exit codes</h3>
+        <hr/>
+        <div style="display:flex;flex-direction:column;gap:.75rem;margin-top:1rem">
+          <div style="display:flex;gap:1rem;align-items:center">
+            <code style="background:var(--surface2);padding:.2rem .5rem;border-radius:.3rem;color:var(--accent2);min-width:1.5rem;text-align:center">0</code>
+            <span style="color:var(--muted)">Score &ge; 60 — passing</span>
+          </div>
+          <div style="display:flex;gap:1rem;align-items:center">
+            <code style="background:var(--surface2);padding:.2rem .5rem;border-radius:.3rem;color:var(--grade-f);min-width:1.5rem;text-align:center">1</code>
+            <span style="color:var(--muted)">Error reading or parsing the spec</span>
+          </div>
+          <div style="display:flex;gap:1rem;align-items:center">
+            <code style="background:var(--surface2);padding:.2rem .5rem;border-radius:.3rem;color:var(--grade-c);min-width:1.5rem;text-align:center">2</code>
+            <span style="color:var(--muted)">Score &lt; 60 — failing grade</span>
+          </div>
+        </div>
+        <hr style="margin-top:1.25rem"/>
+        <p style="color:var(--muted);font-size:.85rem;margin-top:.75rem">
+          Gate your CI pipeline on API quality:<br/>
+          <code style="color:var(--accent)">api-scorecard score openapi.yaml || exit 1</code>
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <p>
+    <strong>api-scorecard</strong> — Open source under MIT.
+    Built for the age of AI agents.<br/>
+    <a href="https://github.com/SheepSeb/reuse_api">GitHub</a> &nbsp;·&nbsp;
+    <a href="https://github.com/SheepSeb/reuse_api/issues">Issues</a> &nbsp;·&nbsp;
+    <a href="https://github.com/SheepSeb/reuse_api/blob/main/README.md">Docs</a>
+  </p>
+</footer>
+
+<script>
+  function showTab(tab) {
+    document.getElementById('tab-uv').style.display = tab === 'uv' ? 'block' : 'none';
+    document.getElementById('tab-pip').style.display = tab === 'pip' ? 'block' : 'none';
+    document.querySelectorAll('.tab-btn').forEach((btn, i) => {
+      btn.classList.toggle('active', (i === 0 && tab === 'uv') || (i === 1 && tab === 'pip'));
+    });
+  }
+</script>
+
+</body>
+</html>
