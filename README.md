@@ -14,6 +14,8 @@ pip install -e .
 
 ## Usage
 
+### Scorecard
+
 ```bash
 # Score an OpenAPI spec
 api-scorecard score path/to/openapi.yaml
@@ -26,13 +28,38 @@ api-scorecard demo
 api-scorecard demo --json
 ```
 
+### Sandbox
+
+The sandbox spins up a local mock server from your spec and auto-probes every endpoint, reporting a **feasibility score** — how well the spec can actually be exercised by an agent.
+
+```bash
+# Start a persistent mock server (press Ctrl+C to stop)
+api-scorecard sandbox start path/to/openapi.yaml
+api-scorecard sandbox start path/to/openapi.yaml --port 9000
+
+# Probe all endpoints and get a report
+api-scorecard sandbox probe path/to/openapi.yaml
+api-scorecard sandbox probe path/to/openapi.yaml --json
+
+# Run against the built-in sample spec
+api-scorecard sandbox demo
+api-scorecard sandbox demo --json
+```
+
+The `probe` command:
+1. Starts an internal mock server
+2. Generates synthetic request payloads and path parameters from the spec's schemas
+3. Fires requests at every operation
+4. Reports per-endpoint status codes, response times, and any issues found
+5. Exits with code `2` if the feasibility score is below 50%
+
 ### Exit codes
 
 | Code | Meaning |
 |------|---------|
-| `0` | Score ≥ 60 (passing) |
+| `0` | Success / score ≥ threshold |
 | `1` | Error reading or parsing the spec |
-| `2` | Score < 60 (failing grade) |
+| `2` | Score below threshold (< 60 for scorecard, < 50% for sandbox) |
 
 ## What gets scored
 
