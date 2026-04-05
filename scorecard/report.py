@@ -66,7 +66,7 @@ def print_report(report: ScorecardReport) -> None:
     score_line.append(f"  Grade: ", style="white")
     score_line.append(report.grade, style=grade_style)
 
-    console.print(Panel(Text.assemble(header, score_line), title="[bold]API AI Readiness Scorecard[/]", border_style="bright_blue"))
+    console.print(Panel(Text.assemble(header, score_line), title="[bold]cli-jentic[/] · OpenAPI AI readiness", border_style="bright_blue"))
 
     # Dimension table
     table = Table(box=box.ROUNDED, show_header=True, header_style="bold bright_blue")

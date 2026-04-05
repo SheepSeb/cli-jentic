@@ -87,7 +87,7 @@ Each spec is evaluated across 6 weighted dimensions:
 ## Example output
 
 ```
-╭─ API AI Readiness Scorecard ──────────────────────────────────╮
+╭─ cli-jentic · OpenAPI AI readiness ───────────────────────────╮
 │  Task Manager API  v1.0.0                                      │
 │  sample_spec.yaml                                              │
 │                                                                │
