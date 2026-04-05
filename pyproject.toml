@@ -1,5 +1,5 @@
 [project]
-name = "reuse-api"
+name = "cli-jentic"
 version = "0.1.0"
 description = "OpenAPI AI Readiness Scorecard & Sandbox — score and simulate your APIs for agentic use"
 readme = "README.md"
@@ -39,7 +39,7 @@ Repository    = "https://github.com/SheepSeb/cli-jentic"
 "Bug Tracker" = "https://github.com/SheepSeb/cli-jentic/issues"
 
 [project.scripts]
-api-scorecard = "scorecard.cli:app"
+cli-jentic = "scorecard.cli:app"
 
 # ── Build ──────────────────────────────────────────────────────────────────────
 [tool.hatch.build.targets.wheel]

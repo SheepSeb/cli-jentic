@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>api-scorecard — OpenAPI AI Readiness Scorer</title>
+  <title>cli-jentic — OpenAPI AI Readiness Scorer</title>
 
   <!-- Google Analytics GA4 — replace G-XXXXXXXXXX with your Measurement ID -->
   <!-- Get one free at: https://analytics.google.com → Admin → Create Property -->
@@ -533,7 +533,7 @@
 
 <!-- NAV -->
 <nav>
-  <span class="nav-logo">$ api-scorecard</span>
+  <span class="nav-logo">$ cli-jentic</span>
   <button class="hamburger" aria-label="Toggle menu"
     onclick="this.closest('nav').querySelector('.nav-links').classList.toggle('open')">
     <span></span><span></span><span></span>
@@ -554,7 +554,7 @@
   <div class="badge">Open Source CLI</div>
   <h1>Is your API ready for<br><span>AI agents?</span></h1>
   <p class="hero-sub">
-    <strong>api-scorecard</strong> scores your OpenAPI spec across 6 dimensions and gives it a letter grade —
+    <strong>cli-jentic</strong> scores your OpenAPI spec across 6 dimensions and gives it a letter grade —
     so you know exactly what to fix before connecting it to an LLM.
   </p>
   <div class="cta-group">
@@ -571,10 +571,10 @@
       <div class="dot dot-red"></div>
       <div class="dot dot-yellow"></div>
       <div class="dot dot-green"></div>
-      <span class="terminal-title">api-scorecard score openapi.yaml</span>
+      <span class="terminal-title">cli-jentic score openapi.yaml</span>
     </div>
     <div class="terminal-body">
-      <div><span class="term-prompt">$</span> <span class="term-cmd">api-scorecard score openapi.yaml</span></div>
+      <div><span class="term-prompt">$</span> <span class="term-cmd">cli-jentic score openapi.yaml</span></div>
       <div class="term-box">╭─ API AI Readiness Scorecard ──────────────────────╮
 │  Task Manager API  v1.0.0                          │
 │  Overall Score: <span class="term-grade-f">42.3</span>/100  Grade: <span class="term-grade-f">F</span>               │
@@ -591,7 +591,7 @@
       <div class="term-out">  <span style="color:#d29922">!</span> 5/6 operations have no documented error responses</div>
       <div class="term-out">  <span style="color:#f78166">✗</span> Security schemes defined but operations not secured</div>
       <br>
-      <div><span class="term-prompt">$</span> <span class="term-cmd">api-scorecard score openapi.yaml <span class="term-arg">--json</span> | jq <span class="term-arg">'.overall_score'</span></span></div>
+      <div><span class="term-prompt">$</span> <span class="term-cmd">cli-jentic score openapi.yaml <span class="term-arg">--json</span> | jq <span class="term-arg">'.overall_score'</span></span></div>
       <div class="term-out">42.3</div>
     </div>
   </div>
@@ -599,7 +599,7 @@
 
 <!-- FEATURES -->
 <section id="features" class="page-section">
-  <div class="section-label">Why api-scorecard</div>
+  <div class="section-label">Why cli-jentic</div>
   <h2>Ship APIs that AI agents<br>can actually use</h2>
   <p class="subtitle">Most OpenAPI specs are written for humans. AI agents have different needs — and most specs fail silently.</p>
   <div class="grid grid-3">
@@ -691,7 +691,7 @@
 <!-- COMPARISON -->
 <section id="compare" class="page-section">
   <div class="section-label">Comparison</div>
-  <h2>api-scorecard vs Jentic</h2>
+  <h2>cli-jentic vs Jentic</h2>
   <p class="subtitle">Both tools aim to make APIs work better with AI — but they solve fundamentally different problems at different points in your workflow.</p>
 
   <!-- TABLE — shown on tablet/desktop -->
@@ -700,7 +700,7 @@
       <thead>
         <tr>
           <th style="width:34%">Feature</th>
-          <th class="hl" style="width:33%">api-scorecard</th>
+          <th class="hl" style="width:33%">cli-jentic</th>
           <th style="width:33%">Jentic</th>
         </tr>
       </thead>
@@ -727,42 +727,42 @@
     <div class="cmp-card">
       <div class="cmp-card-header">Primary purpose &amp; when to use</div>
       <div class="cmp-row">
-        <div class="cmp-cell"><div class="cmp-cell-label acc">api-scorecard</div><span class="cmp-yes">✓ Score &amp; improve OpenAPI specs (design time)</span></div>
+        <div class="cmp-cell"><div class="cmp-cell-label acc">cli-jentic</div><span class="cmp-yes">✓ Score &amp; improve OpenAPI specs (design time)</span></div>
         <div class="cmp-cell"><div class="cmp-cell-label mut">Jentic</div><span class="cmp-par">~ Discover &amp; execute APIs (runtime)</span></div>
       </div>
     </div>
     <div class="cmp-card">
       <div class="cmp-card-header">Input / Output</div>
       <div class="cmp-row">
-        <div class="cmp-cell"><div class="cmp-cell-label acc">api-scorecard</div><span class="cmp-yes">✓ Local YAML/JSON → letter grade + fixes</span></div>
+        <div class="cmp-cell"><div class="cmp-cell-label acc">cli-jentic</div><span class="cmp-yes">✓ Local YAML/JSON → letter grade + fixes</span></div>
         <div class="cmp-cell"><div class="cmp-cell-label mut">Jentic</div><span class="cmp-no">✗ Natural language → executable API call</span></div>
       </div>
     </div>
     <div class="cmp-card">
       <div class="cmp-card-header">Open Source &amp; local</div>
       <div class="cmp-row">
-        <div class="cmp-cell"><div class="cmp-cell-label acc">api-scorecard</div><span class="cmp-yes">✓ Fully open source, 100% offline</span></div>
+        <div class="cmp-cell"><div class="cmp-cell-label acc">cli-jentic</div><span class="cmp-yes">✓ Fully open source, 100% offline</span></div>
         <div class="cmp-cell"><div class="cmp-cell-label mut">Jentic</div><span class="cmp-par">~ SDK open source, needs internet</span></div>
       </div>
     </div>
     <div class="cmp-card">
       <div class="cmp-card-header">CI/CD &amp; fix guidance</div>
       <div class="cmp-row">
-        <div class="cmp-cell"><div class="cmp-cell-label acc">api-scorecard</div><span class="cmp-yes">✓ Exit codes, JSON output, actionable paths</span></div>
+        <div class="cmp-cell"><div class="cmp-cell-label acc">cli-jentic</div><span class="cmp-yes">✓ Exit codes, JSON output, actionable paths</span></div>
         <div class="cmp-cell"><div class="cmp-cell-label mut">Jentic</div><span class="cmp-no">✗ Not designed for CI</span></div>
       </div>
     </div>
     <div class="cmp-card">
       <div class="cmp-card-header">API execution &amp; discovery</div>
       <div class="cmp-row">
-        <div class="cmp-cell"><div class="cmp-cell-label acc">api-scorecard</div><span class="cmp-no">✗ Analysis only</span></div>
+        <div class="cmp-cell"><div class="cmp-cell-label acc">cli-jentic</div><span class="cmp-no">✗ Analysis only</span></div>
         <div class="cmp-cell"><div class="cmp-cell-label mut">Jentic</div><span class="cmp-yes">✓ Executes APIs, large registry</span></div>
       </div>
     </div>
     <div class="cmp-card">
       <div class="cmp-card-header">Account required</div>
       <div class="cmp-row">
-        <div class="cmp-cell"><div class="cmp-cell-label acc">api-scorecard</div><span class="cmp-yes">✓ Zero signup needed</span></div>
+        <div class="cmp-cell"><div class="cmp-cell-label acc">cli-jentic</div><span class="cmp-yes">✓ Zero signup needed</span></div>
         <div class="cmp-cell"><div class="cmp-cell-label mut">Jentic</div><span class="cmp-par">~ Free tier, API key for full access</span></div>
       </div>
     </div>
@@ -772,9 +772,9 @@
   <div class="card" style="background:rgba(88,166,255,.06);border-color:rgba(88,166,255,.3)">
     <h3 style="color:var(--accent);margin-bottom:.5rem">They're complementary, not competing</h3>
     <p style="color:var(--muted)">
-      Use <strong style="color:var(--text)">api-scorecard</strong> to verify your OpenAPI spec is high-quality and AI-ready.
+      Use <strong style="color:var(--text)">cli-jentic</strong> to verify your OpenAPI spec is high-quality and AI-ready.
       Then use <strong style="color:var(--text)">Jentic</strong> to let agents discover and call it at runtime.
-      A higher api-scorecard grade means Jentic agents can use your API more reliably.
+      A higher cli-jentic grade means Jentic agents can use your API more reliably.
     </p>
   </div>
 </section>
@@ -795,10 +795,10 @@
         <span class="cmd">uv pip install</span> <span class="arg">-e git+https://github.com/SheepSeb/cli-jentic</span><br>
         <br>
         <span class="comment"># Score your spec</span><br>
-        <span class="cmd">api-scorecard score</span> <span class="arg">path/to/openapi.yaml</span><br>
+        <span class="cmd">cli-jentic score</span> <span class="arg">path/to/openapi.yaml</span><br>
         <br>
         <span class="comment"># Try the built-in demo</span><br>
-        <span class="cmd">api-scorecard demo</span>
+        <span class="cmd">cli-jentic demo</span>
       </div>
       <div id="tab-pip" class="code-block" style="display:none">
         <span class="comment"># Clone &amp; install</span><br>
@@ -806,10 +806,10 @@
         <span class="cmd">pip install</span> <span class="arg">-e ./cli-jentic</span><br>
         <br>
         <span class="comment"># Score your spec</span><br>
-        <span class="cmd">api-scorecard score</span> <span class="arg">path/to/openapi.yaml</span><br>
+        <span class="cmd">cli-jentic score</span> <span class="arg">path/to/openapi.yaml</span><br>
         <br>
         <span class="comment"># JSON output for CI</span><br>
-        <span class="cmd">api-scorecard score</span> <span class="arg">openapi.yaml --json</span>
+        <span class="cmd">cli-jentic score</span> <span class="arg">openapi.yaml --json</span>
       </div>
     </div>
     <div>
@@ -833,7 +833,7 @@
         <hr style="margin-top:1.1rem">
         <p style="color:var(--muted);font-size:.82rem;margin-top:.7rem">
           Gate your CI pipeline on API quality:<br>
-          <code style="color:var(--accent);font-size:.8rem">api-scorecard score spec.yaml || exit 1</code>
+          <code style="color:var(--accent);font-size:.8rem">cli-jentic score spec.yaml || exit 1</code>
         </p>
       </div>
     </div>
@@ -884,7 +884,7 @@
 <!-- FOOTER -->
 <footer>
   <p>
-    <strong>api-scorecard</strong> — Open source under MIT. Built for the age of AI agents.<br>
+    <strong>cli-jentic</strong> — Open source under MIT. Built for the age of AI agents.<br>
     <a href="https://github.com/SheepSeb/cli-jentic" onclick="track('footer','github')">GitHub</a> &nbsp;·&nbsp;
     <a href="https://github.com/SheepSeb/cli-jentic/issues" onclick="track('footer','issues')">Issues</a> &nbsp;·&nbsp;
     <a href="https://github.com/SheepSeb/cli-jentic/blob/web/README.md" onclick="track('footer','docs')">Docs</a>

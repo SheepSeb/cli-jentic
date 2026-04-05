@@ -1,4 +1,4 @@
-# api-scorecard
+# cli-jentic
 
 A CLI tool that scores OpenAPI specs for AI-readiness across 6 dimensions — giving APIs a letter grade and actionable recommendations so they work well with AI agents and LLM tooling.
 
@@ -18,14 +18,14 @@ pip install -e .
 
 ```bash
 # Score an OpenAPI spec
-api-scorecard score path/to/openapi.yaml
+cli-jentic score path/to/openapi.yaml
 
 # Output as JSON
-api-scorecard score path/to/openapi.yaml --json
+cli-jentic score path/to/openapi.yaml --json
 
 # Run against the built-in sample spec to see how scoring works
-api-scorecard demo
-api-scorecard demo --json
+cli-jentic demo
+cli-jentic demo --json
 ```
 
 ### Sandbox
@@ -34,16 +34,16 @@ The sandbox spins up a local mock server from your spec and auto-probes every en
 
 ```bash
 # Start a persistent mock server (press Ctrl+C to stop)
-api-scorecard sandbox start path/to/openapi.yaml
-api-scorecard sandbox start path/to/openapi.yaml --port 9000
+cli-jentic sandbox start path/to/openapi.yaml
+cli-jentic sandbox start path/to/openapi.yaml --port 9000
 
 # Probe all endpoints and get a report
-api-scorecard sandbox probe path/to/openapi.yaml
-api-scorecard sandbox probe path/to/openapi.yaml --json
+cli-jentic sandbox probe path/to/openapi.yaml
+cli-jentic sandbox probe path/to/openapi.yaml --json
 
 # Run against the built-in sample spec
-api-scorecard sandbox demo
-api-scorecard sandbox demo --json
+cli-jentic sandbox demo
+cli-jentic sandbox demo --json
 ```
 
 The `probe` command:
@@ -117,7 +117,7 @@ Issues & Recommendations
 Pass `--json` to get a machine-readable report:
 
 ```bash
-api-scorecard score openapi.yaml --json | jq '.overall_score'
+cli-jentic score openapi.yaml --json | jq '.overall_score'
 ```
 
 ```json
