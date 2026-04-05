@@ -421,6 +421,65 @@
     .code-block .cmd { color: var(--accent2); }
     .code-block .arg { color: var(--accent); }
 
+    /* ── PyPI install callout ─────────────────────────── */
+    .pypi-hero {
+      margin: 0 0 2.25rem;
+      padding: clamp(1.5rem, 4vw, 2.25rem) clamp(1.25rem, 3vw, 2rem);
+      background: linear-gradient(145deg, rgba(88, 166, 255, 0.12) 0%, rgba(63, 185, 80, 0.06) 100%);
+      border: 2px solid rgba(88, 166, 255, 0.45);
+      border-radius: 1rem;
+      text-align: center;
+    }
+    .pypi-hero-badge {
+      display: inline-block;
+      font-size: .72rem;
+      font-weight: 800;
+      letter-spacing: .14em;
+      text-transform: uppercase;
+      color: var(--accent);
+      background: rgba(88, 166, 255, 0.12);
+      border: 1px solid rgba(88, 166, 255, 0.35);
+      padding: .35rem .75rem;
+      border-radius: 999px;
+      margin-bottom: 1rem;
+    }
+    .pypi-hero-title {
+      font-size: clamp(1.85rem, 5.5vw, 2.75rem);
+      font-weight: 800;
+      line-height: 1.15;
+      margin-bottom: .5rem;
+      letter-spacing: -0.02em;
+    }
+    .pypi-hero-sub {
+      color: var(--muted);
+      font-size: 1.05rem;
+      max-width: 32rem;
+      margin: 0 auto 1.35rem;
+    }
+    .pypi-hero-command {
+      font-family: "SF Mono", "Fira Code", "Cascadia Code", monospace;
+      font-size: clamp(1rem, 2.8vw, 1.25rem);
+      font-weight: 600;
+      color: var(--accent2);
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: .5rem;
+      padding: .85rem 1.25rem;
+      margin: 0 auto 1.25rem;
+      max-width: 28rem;
+      overflow-x: auto;
+      text-align: center;
+    }
+    .pypi-hero-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: .75rem;
+      justify-content: center;
+      align-items: center;
+    }
+    .pypi-hero-actions .btn { font-size: 1rem; padding: .65rem 1.35rem; }
+    .pypi-hero-actions a.btn-secondary { color: var(--accent); border-color: rgba(88, 166, 255, 0.45); }
+
     /* ── CONTACT ─────────────────────────────────────── */
     .contact-grid {
       display: grid;
@@ -789,14 +848,41 @@
   <div class="section-label">Get started</div>
   <h2>Up and running in 30 seconds</h2>
   <p class="subtitle">No account. No config. Just point it at an OpenAPI spec.</p>
+
+  <div class="pypi-hero">
+    <div class="pypi-hero-badge">Python Package Index</div>
+    <h3 class="pypi-hero-title">Install from PyPI</h3>
+    <p class="pypi-hero-sub">Official release — same tool as on this site. One command and you are ready to score specs.</p>
+    <div class="pypi-hero-command">pip install cli-jentic</div>
+    <div class="pypi-hero-actions">
+      <a class="btn btn-primary" href="https://pypi.org/project/cli-jentic/" target="_blank" rel="noopener"
+         onclick="track('install','pypi-project-page')">Open cli-jentic on PyPI</a>
+      <a class="btn btn-secondary" href="#install-alternatives" onclick="track('install','pypi-scroll-more')">More install options</a>
+    </div>
+  </div>
+
   <div class="grid grid-2">
-    <div>
+    <div id="install-alternatives">
       <div class="install-tabs">
-        <button class="tab-btn active" onclick="showTab('uv');track('install','tab-uv')">uv (recommended)</button>
-        <button class="tab-btn"        onclick="showTab('pip');track('install','tab-pip')">pip</button>
+        <button class="tab-btn active" onclick="showTab('pypi');track('install','tab-pypi')">PyPI (recommended)</button>
+        <button class="tab-btn"        onclick="showTab('uv');track('install','tab-uv')">uv + git</button>
+        <button class="tab-btn"        onclick="showTab('pip');track('install','tab-pip')">pip + git</button>
       </div>
-      <div id="tab-uv" class="code-block">
-        <span class="comment"># Install</span><br>
+      <div id="tab-pypi" class="code-block">
+        <span class="comment"># Install from PyPI</span><br>
+        <span class="cmd">pip install</span> <span class="arg">cli-jentic</span><br>
+        <br>
+        <span class="comment"># Or with uv</span><br>
+        <span class="cmd">uv pip install</span> <span class="arg">cli-jentic</span><br>
+        <br>
+        <span class="comment"># Score your spec</span><br>
+        <span class="cmd">cli-jentic score</span> <span class="arg">path/to/openapi.yaml</span><br>
+        <br>
+        <span class="comment"># Try the built-in demo</span><br>
+        <span class="cmd">cli-jentic demo</span>
+      </div>
+      <div id="tab-uv" class="code-block" style="display:none">
+        <span class="comment"># Editable install from Git (contributors)</span><br>
         <span class="cmd">uv pip install</span> <span class="arg">-e git+https://github.com/SheepSeb/cli-jentic</span><br>
         <br>
         <span class="comment"># Score your spec</span><br>
@@ -806,7 +892,7 @@
         <span class="cmd">cli-jentic demo</span>
       </div>
       <div id="tab-pip" class="code-block" style="display:none">
-        <span class="comment"># Clone &amp; install</span><br>
+        <span class="comment"># Editable install from Git (contributors)</span><br>
         <span class="cmd">git clone</span> <span class="arg">https://github.com/SheepSeb/cli-jentic</span><br>
         <span class="cmd">pip install</span> <span class="arg">-e ./cli-jentic</span><br>
         <br>
@@ -898,10 +984,12 @@
 
 <script>
   function showTab(tab) {
-    document.getElementById('tab-uv').style.display  = tab === 'uv'  ? 'block' : 'none';
-    document.getElementById('tab-pip').style.display = tab === 'pip' ? 'block' : 'none';
+    document.getElementById('tab-pypi').style.display = tab === 'pypi' ? 'block' : 'none';
+    document.getElementById('tab-uv').style.display   = tab === 'uv'   ? 'block' : 'none';
+    document.getElementById('tab-pip').style.display  = tab === 'pip'  ? 'block' : 'none';
     document.querySelectorAll('.tab-btn').forEach((btn, i) => {
-      btn.classList.toggle('active', (i === 0 && tab === 'uv') || (i === 1 && tab === 'pip'));
+      btn.classList.toggle('active',
+        (i === 0 && tab === 'pypi') || (i === 1 && tab === 'uv') || (i === 2 && tab === 'pip'));
     });
   }
 </script>
