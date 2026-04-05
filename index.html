@@ -14,20 +14,17 @@
     gtag('js', new Date());
     gtag('config', 'G-XXXXXXXXXX');
 
-    // Lightweight click tracker — fires a GA4 event + records in localStorage
     function track(category, label) {
       gtag('event', 'click', { event_category: category, event_label: label });
       try {
-        var key = 'sc_clicks';
-        var data = JSON.parse(localStorage.getItem(key) || '{}');
+        var data = JSON.parse(localStorage.getItem('sc_clicks') || '{}');
         var k = category + ':' + label;
         data[k] = (data[k] || 0) + 1;
-        localStorage.setItem(key, JSON.stringify(data));
+        localStorage.setItem('sc_clicks', JSON.stringify(data));
         refreshStats();
       } catch(e) {}
     }
 
-    // Keyboard shortcut: press Shift+S to see click stats overlay
     document.addEventListener('keydown', function(e) {
       if (e.shiftKey && e.key === 'S') toggleStats();
     });
@@ -39,22 +36,22 @@
     }
     function refreshStats() {
       var el = document.getElementById('stats-body');
-      if (!el || document.getElementById('stats-overlay').style.display === 'none') return;
-      try {
-        var data = JSON.parse(localStorage.getItem('sc_clicks') || '{}');
-        var rows = Object.entries(data).sort((a,b) => b[1]-a[1]);
-        if (!rows.length) { el.innerHTML = '<p style="color:#8b949e">No clicks recorded yet.</p>'; return; }
-        el.innerHTML = rows.map(([k,v]) =>
-          '<div style="display:flex;justify-content:space-between;padding:.3rem 0;border-bottom:1px solid #30363d">'
-          + '<span style="color:#e6edf3;font-size:.85rem">' + k + '</span>'
-          + '<span style="color:#58a6ff;font-weight:700;min-width:2rem;text-align:right">' + v + '</span>'
-          + '</div>'
-        ).join('');
-      } catch(e) {}
+      var overlay = document.getElementById('stats-overlay');
+      if (!el || !overlay || overlay.style.display === 'none') return;
+      var data = JSON.parse(localStorage.getItem('sc_clicks') || '{}');
+      var rows = Object.entries(data).sort((a,b) => b[1]-a[1]);
+      if (!rows.length) { el.innerHTML = '<p style="color:#8b949e;font-size:.85rem">No clicks yet.</p>'; return; }
+      el.innerHTML = rows.map(([k,v]) =>
+        '<div style="display:flex;justify-content:space-between;padding:.3rem 0;border-bottom:1px solid #30363d;font-size:.82rem">'
+        + '<span style="color:#e6edf3">' + k + '</span>'
+        + '<span style="color:#58a6ff;font-weight:700;margin-left:1rem">' + v + '</span>'
+        + '</div>'
+      ).join('');
     }
   </script>
 
   <style>
+    /* ── TOKENS ─────────────────────────────────────── */
     :root {
       --bg: #0d1117;
       --surface: #161b22;
@@ -62,7 +59,6 @@
       --border: #30363d;
       --accent: #58a6ff;
       --accent2: #3fb950;
-      --accent3: #f78166;
       --text: #e6edf3;
       --muted: #8b949e;
       --grade-a: #3fb950;
@@ -70,24 +66,30 @@
       --grade-c: #d29922;
       --grade-f: #f78166;
     }
-    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    /* ── RESET ──────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { overflow-x: hidden; }
     body {
       background: var(--bg);
       color: var(--text);
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", sans-serif;
       line-height: 1.6;
+      overflow-x: hidden;
     }
 
-    /* NAV */
+    /* ── NAV ────────────────────────────────────────── */
     nav {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 1rem 2rem;
+      flex-wrap: wrap;
+      gap: .5rem;
+      padding: .9rem 1.25rem;
       border-bottom: 1px solid var(--border);
       position: sticky;
       top: 0;
-      background: rgba(13,17,23,.9);
+      background: rgba(13,17,23,.95);
       backdrop-filter: blur(8px);
       z-index: 100;
     }
@@ -95,76 +97,111 @@
       font-family: "SF Mono", "Fira Code", monospace;
       font-weight: 700;
       color: var(--accent);
-      font-size: 1.1rem;
+      font-size: 1rem;
     }
-    nav a {
+    /* hamburger — visible only on mobile */
+    .hamburger {
+      display: none;
+      flex-direction: column;
+      gap: 5px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: .3rem;
+    }
+    .hamburger span {
+      display: block;
+      width: 22px;
+      height: 2px;
+      background: var(--text);
+      border-radius: 2px;
+      transition: transform .2s, opacity .2s;
+    }
+    /* nav links — a flex row by default (desktop) */
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: .25rem;
+    }
+    .nav-links a {
       color: var(--muted);
       text-decoration: none;
-      font-size: .9rem;
-      margin-left: 1.5rem;
-      transition: color .2s;
+      font-size: .875rem;
+      padding: .35rem .65rem;
+      border-radius: .4rem;
+      transition: color .2s, background .2s;
     }
-    nav a:hover { color: var(--text); }
+    .nav-links a:hover { color: var(--text); background: var(--surface2); }
 
-    /* HERO */
+    /* ── LAYOUT ─────────────────────────────────────── */
+    .page-section {
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 4rem 1.25rem;
+    }
+    .page-section + .page-section { padding-top: 0; }
+
+    /* ── HERO ───────────────────────────────────────── */
     .hero {
-      max-width: 800px;
-      margin: 6rem auto 4rem;
-      padding: 0 2rem;
       text-align: center;
+      padding: 4rem 1.25rem 3rem;
+      max-width: 800px;
+      margin: 0 auto;
     }
     .badge {
       display: inline-block;
-      background: rgba(88,166,255,.15);
+      background: rgba(88,166,255,.12);
       color: var(--accent);
       border: 1px solid rgba(88,166,255,.3);
       border-radius: 2rem;
-      padding: .3rem .9rem;
-      font-size: .8rem;
+      padding: .28rem .85rem;
+      font-size: .78rem;
       font-family: "SF Mono", monospace;
       margin-bottom: 1.5rem;
       letter-spacing: .05em;
     }
     h1 {
-      font-size: clamp(2.2rem, 5vw, 3.5rem);
+      font-size: clamp(1.9rem, 6vw, 3.5rem);
       font-weight: 800;
       line-height: 1.15;
-      margin-bottom: 1.25rem;
+      margin-bottom: 1.1rem;
     }
     h1 span { color: var(--accent); }
-    .hero p {
-      font-size: 1.2rem;
+    .hero-sub {
+      font-size: clamp(.95rem, 2.5vw, 1.2rem);
       color: var(--muted);
-      max-width: 620px;
-      margin: 0 auto 2.5rem;
+      max-width: 580px;
+      margin: 0 auto 2rem;
     }
-    .cta-group { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; }
+    .cta-group {
+      display: flex;
+      gap: .85rem;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
     .btn {
       display: inline-flex;
       align-items: center;
-      gap: .5rem;
-      padding: .7rem 1.5rem;
+      gap: .45rem;
+      padding: .65rem 1.4rem;
       border-radius: .5rem;
       font-weight: 600;
-      font-size: .95rem;
+      font-size: .9rem;
       text-decoration: none;
-      transition: opacity .2s, transform .1s;
+      transition: opacity .2s, transform .15s;
       cursor: pointer;
       border: none;
+      white-space: nowrap;
     }
-    .btn:hover { opacity: .85; transform: translateY(-1px); }
+    .btn:hover { opacity: .82; transform: translateY(-1px); }
     .btn-primary { background: var(--accent); color: #0d1117; }
-    .btn-secondary {
-      background: transparent;
-      color: var(--text);
-      border: 1px solid var(--border);
-    }
+    .btn-secondary { background: transparent; color: var(--text); border: 1px solid var(--border); }
 
-    /* TERMINAL */
+    /* ── TERMINAL ───────────────────────────────────── */
     .terminal-wrap {
       max-width: 700px;
-      margin: 0 auto 5rem;
-      padding: 0 2rem;
+      margin: 0 auto;
+      padding: 0 1.25rem 4rem;
     }
     .terminal {
       background: var(--surface);
@@ -172,305 +209,324 @@
       border-radius: .75rem;
       overflow: hidden;
       font-family: "SF Mono", "Fira Code", "Cascadia Code", monospace;
-      font-size: .82rem;
+      font-size: .8rem;
     }
     .terminal-bar {
       background: var(--surface2);
-      padding: .6rem 1rem;
+      padding: .55rem 1rem;
       display: flex;
       align-items: center;
-      gap: .5rem;
+      gap: .45rem;
       border-bottom: 1px solid var(--border);
     }
-    .dot { width: 12px; height: 12px; border-radius: 50%; }
+    .dot { width: 11px; height: 11px; border-radius: 50%; flex-shrink: 0; }
     .dot-red { background: #ff5f57; }
     .dot-yellow { background: #ffbd2e; }
     .dot-green { background: #28ca41; }
-    .terminal-title { margin-left: auto; margin-right: auto; color: var(--muted); font-size: .8rem; }
-    .terminal-body { padding: 1.25rem; line-height: 1.7; }
+    .terminal-title { margin: 0 auto; color: var(--muted); font-size: .78rem; }
+    .terminal-body { padding: 1rem 1.1rem; line-height: 1.75; overflow-x: auto; }
     .term-prompt { color: var(--accent2); }
     .term-cmd { color: var(--text); }
     .term-out { color: var(--muted); }
-    .term-grade { color: var(--grade-a); font-weight: 700; }
     .term-grade-f { color: var(--grade-f); font-weight: 700; }
     .term-grade-c { color: var(--grade-c); font-weight: 700; }
     .term-box {
       border: 1px solid var(--border);
-      border-radius: .4rem;
-      padding: .6rem .9rem;
-      margin: .5rem 0;
-      white-space: pre;
+      border-radius: .35rem;
+      padding: .5rem .75rem;
+      margin: .4rem 0;
       overflow-x: auto;
+      white-space: pre;
     }
+    .term-arg { color: var(--accent); }
 
-    /* FEATURES */
-    section { max-width: 1000px; margin: 0 auto 6rem; padding: 0 2rem; }
+    /* ── SECTION TYPOGRAPHY ─────────────────────────── */
     .section-label {
       text-transform: uppercase;
       letter-spacing: .12em;
-      font-size: .75rem;
+      font-size: .72rem;
       color: var(--accent);
-      margin-bottom: .75rem;
+      margin-bottom: .6rem;
       font-weight: 700;
     }
     h2 {
-      font-size: clamp(1.6rem, 3vw, 2.2rem);
-      margin-bottom: 1rem;
+      font-size: clamp(1.5rem, 4vw, 2.1rem);
+      margin-bottom: .85rem;
       font-weight: 700;
     }
-    .subtitle { color: var(--muted); margin-bottom: 2.5rem; font-size: 1.05rem; }
+    .subtitle { color: var(--muted); margin-bottom: 2rem; font-size: 1rem; }
 
-    .grid { display: grid; gap: 1.25rem; }
-    .grid-3 { grid-template-columns: repeat(auto-fit, minmax(270px, 1fr)); }
-    .grid-2 { grid-template-columns: repeat(auto-fit, minmax(360px, 1fr)); }
+    /* ── CARDS / GRID ───────────────────────────────── */
+    .grid { display: grid; gap: 1rem; }
+    /* single column on mobile, expand at wider screens */
+    .grid-3 { grid-template-columns: 1fr; }
+    .grid-2 { grid-template-columns: 1fr; }
 
     .card {
       background: var(--surface);
       border: 1px solid var(--border);
       border-radius: .75rem;
-      padding: 1.5rem;
+      padding: 1.35rem;
       transition: border-color .2s;
     }
     .card:hover { border-color: var(--accent); }
-    .card-icon { font-size: 1.6rem; margin-bottom: .75rem; }
-    .card h3 { font-size: 1rem; margin-bottom: .5rem; font-weight: 600; }
-    .card p { color: var(--muted); font-size: .9rem; }
+    .card-icon { font-size: 1.5rem; margin-bottom: .65rem; }
+    .card h3 { font-size: .975rem; margin-bottom: .4rem; font-weight: 600; }
+    .card p { color: var(--muted); font-size: .88rem; }
 
-    /* DIMENSIONS */
-    .dim-grid { display: grid; gap: .75rem; }
+    /* ── DIMENSIONS ─────────────────────────────────── */
+    .dim-grid { display: grid; gap: .65rem; }
     .dim-row {
       display: flex;
       align-items: center;
-      gap: 1rem;
+      gap: .75rem;
       background: var(--surface);
       border: 1px solid var(--border);
       border-radius: .5rem;
-      padding: .9rem 1.2rem;
+      padding: .8rem 1rem;
     }
-    .dim-name { flex: 1; font-size: .9rem; font-weight: 500; }
+    .dim-icon { font-size: 1.1rem; flex-shrink: 0; }
+    .dim-name { flex: 1; font-size: .88rem; font-weight: 500; min-width: 0; }
+    .dim-name small { display: block; color: var(--muted); font-size: .78rem; font-weight: 400; }
     .dim-weight {
       font-family: monospace;
       color: var(--accent);
-      font-size: .85rem;
-      min-width: 2.5rem;
-      text-align: right;
+      font-size: .83rem;
+      flex-shrink: 0;
     }
     .dim-bar-wrap {
-      width: 120px;
-      height: 6px;
+      width: 80px;
+      height: 5px;
       background: var(--surface2);
       border-radius: 3px;
       overflow: hidden;
+      flex-shrink: 0;
     }
     .dim-bar { height: 100%; border-radius: 3px; background: var(--accent); }
 
-    /* COMPARISON TABLE */
-    .compare-wrap { overflow-x: auto; }
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      font-size: .9rem;
-    }
-    thead th {
-      padding: .9rem 1.2rem;
-      text-align: left;
-      border-bottom: 2px solid var(--border);
-      font-size: .85rem;
-      text-transform: uppercase;
-      letter-spacing: .06em;
-      color: var(--muted);
-    }
-    thead th.highlight { color: var(--accent); }
-    tbody tr {
-      border-bottom: 1px solid var(--border);
-      transition: background .15s;
-    }
-    tbody tr:hover { background: var(--surface2); }
-    tbody td {
-      padding: .85rem 1.2rem;
-      vertical-align: top;
-    }
-    td.feature { font-weight: 500; color: var(--text); }
-    td.yes { color: var(--accent2); font-weight: 600; }
-    td.no { color: var(--muted); }
-    td.partial { color: var(--grade-c); }
-    .check::before { content: "✓ "; }
-    .cross::before { content: "✗ "; color: var(--muted); }
-    .dash::before { content: "~ "; color: var(--grade-c); }
-
-    /* GRADES */
-    .grades-row {
-      display: flex;
-      gap: 1rem;
-      flex-wrap: wrap;
-    }
+    /* ── GRADES ─────────────────────────────────────── */
+    .grades-row { display: flex; gap: .75rem; flex-wrap: wrap; margin-top: 1.5rem; }
     .grade-pill {
       display: flex;
       align-items: center;
-      gap: .6rem;
+      gap: .55rem;
       background: var(--surface);
       border: 1px solid var(--border);
       border-radius: .5rem;
-      padding: .7rem 1.2rem;
+      padding: .65rem 1rem;
       flex: 1;
-      min-width: 160px;
+      min-width: 110px;
     }
-    .grade-letter {
-      font-size: 2rem;
-      font-weight: 900;
-      font-family: monospace;
-      line-height: 1;
-    }
+    .grade-letter { font-size: 1.8rem; font-weight: 900; font-family: monospace; line-height: 1; }
     .gl-a { color: var(--grade-a); }
     .gl-b { color: var(--grade-b); }
     .gl-c { color: var(--grade-c); }
     .gl-f { color: var(--grade-f); }
-    .grade-info small { display: block; color: var(--muted); font-size: .8rem; }
+    .grade-info small { display: block; color: var(--muted); font-size: .78rem; }
 
-    /* INSTALL */
-    .install-tabs { display: flex; gap: .5rem; margin-bottom: 1rem; }
+    /* ── COMPARISON TABLE (desktop) ─────────────────── */
+    .compare-table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+    .compare-table-wrap table {
+      width: 100%;
+      min-width: 560px;
+      border-collapse: collapse;
+      font-size: .88rem;
+    }
+    .compare-table-wrap thead th {
+      padding: .8rem 1rem;
+      text-align: left;
+      border-bottom: 2px solid var(--border);
+      font-size: .8rem;
+      text-transform: uppercase;
+      letter-spacing: .06em;
+      color: var(--muted);
+    }
+    .compare-table-wrap thead th.hl { color: var(--accent); }
+    .compare-table-wrap tbody tr { border-bottom: 1px solid var(--border); transition: background .15s; }
+    .compare-table-wrap tbody tr:hover { background: var(--surface2); }
+    .compare-table-wrap tbody td { padding: .75rem 1rem; vertical-align: top; }
+    td.feat { font-weight: 500; color: var(--text); }
+    td.yes { color: var(--accent2); font-weight: 600; }
+    td.no  { color: var(--muted); }
+    td.par { color: var(--grade-c); }
+    .ck::before { content: "✓ "; }
+    .cx::before { content: "✗ "; }
+    .da::before { content: "~ "; }
+
+    /* ── COMPARISON CARDS (mobile) ──────────────────── */
+    .compare-cards { display: none; }
+    .cmp-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: .65rem;
+      overflow: hidden;
+      margin-bottom: .75rem;
+    }
+    .cmp-card-header {
+      padding: .65rem 1rem;
+      background: var(--surface2);
+      font-size: .8rem;
+      font-weight: 600;
+      color: var(--muted);
+      border-bottom: 1px solid var(--border);
+    }
+    .cmp-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      border-bottom: 1px solid var(--border);
+    }
+    .cmp-row:last-child { border-bottom: none; }
+    .cmp-cell {
+      padding: .6rem .85rem;
+      font-size: .82rem;
+    }
+    .cmp-cell:first-child { border-right: 1px solid var(--border); }
+    .cmp-cell-label { font-size: .72rem; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; margin-bottom: .2rem; }
+    .cmp-cell-label.acc { color: var(--accent); }
+    .cmp-cell-label.mut { color: var(--muted); }
+    .cmp-yes { color: var(--accent2); }
+    .cmp-no  { color: var(--muted); }
+    .cmp-par { color: var(--grade-c); }
+
+    /* ── INSTALL ─────────────────────────────────────── */
+    .install-tabs { display: flex; gap: .5rem; margin-bottom: .85rem; flex-wrap: wrap; }
     .tab-btn {
       background: var(--surface);
       border: 1px solid var(--border);
       color: var(--muted);
-      padding: .4rem .9rem;
+      padding: .38rem .85rem;
       border-radius: .4rem;
       font-family: monospace;
-      font-size: .85rem;
+      font-size: .83rem;
       cursor: pointer;
       transition: all .2s;
     }
-    .tab-btn.active {
-      background: var(--accent);
-      color: var(--bg);
-      border-color: var(--accent);
-    }
+    .tab-btn.active { background: var(--accent); color: var(--bg); border-color: var(--accent); }
     .code-block {
       background: var(--surface);
       border: 1px solid var(--border);
       border-radius: .5rem;
-      padding: 1rem 1.25rem;
+      padding: .9rem 1.1rem;
       font-family: "SF Mono", "Fira Code", monospace;
-      font-size: .85rem;
-      line-height: 1.7;
+      font-size: .83rem;
+      line-height: 1.75;
       overflow-x: auto;
-      position: relative;
     }
     .code-block .comment { color: var(--muted); }
     .code-block .cmd { color: var(--accent2); }
     .code-block .arg { color: var(--accent); }
 
-    /* FOOTER */
-    footer {
-      border-top: 1px solid var(--border);
-      padding: 2rem;
-      text-align: center;
-      color: var(--muted);
-      font-size: .85rem;
-    }
-    footer a { color: var(--accent); text-decoration: none; }
-
-    /* DIVIDER */
-    hr { border: none; border-top: 1px solid var(--border); margin: 1.5rem 0; }
-
-    /* MOBILE */
-    @media (max-width: 640px) {
-      nav { padding: .75rem 1rem; flex-wrap: wrap; gap: .5rem; }
-      .nav-links { display: none; }
-      .nav-links.open { display: flex; flex-direction: column; width: 100%; gap: .5rem; padding: .5rem 0; }
-      .nav-links a { margin-left: 0; padding: .4rem 0; border-top: 1px solid var(--border); }
-      .hamburger {
-        display: flex;
-        flex-direction: column;
-        gap: 4px;
-        cursor: pointer;
-        padding: .3rem;
-        background: none;
-        border: none;
-        margin-left: auto;
-      }
-      .hamburger span { display: block; width: 20px; height: 2px; background: var(--text); border-radius: 2px; transition: all .2s; }
-
-      .hero { margin: 3rem auto 2.5rem; }
-      h1 { font-size: 2rem; }
-      .hero p { font-size: 1rem; }
-
-      .terminal-body { font-size: .75rem; padding: .9rem; }
-      .term-box { white-space: pre-wrap; word-break: break-all; }
-
-      section { margin-bottom: 4rem; }
-      .grid-2 { grid-template-columns: 1fr; }
-
-      .dim-bar-wrap { display: none; }
-
-      .grades-row { gap: .5rem; }
-      .grade-pill { min-width: 120px; }
-
-      table { font-size: .8rem; }
-      thead th, tbody td { padding: .6rem .75rem; }
-
-      #stats-overlay { width: calc(100vw - 2rem); right: 1rem; bottom: 1rem; }
-    }
-
-    @media (min-width: 641px) {
-      .hamburger { display: none; }
-      .nav-links { display: flex !important; }
-    }
-
-    /* CONTACT */
+    /* ── CONTACT ─────────────────────────────────────── */
     .contact-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-      gap: 1rem;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: .85rem;
     }
     .contact-link {
       display: flex;
       align-items: center;
-      gap: .85rem;
+      gap: .8rem;
       background: var(--surface);
       border: 1px solid var(--border);
       border-radius: .75rem;
-      padding: 1.1rem 1.4rem;
+      padding: 1rem 1.2rem;
       text-decoration: none;
       color: var(--text);
-      transition: border-color .2s, transform .1s;
+      transition: border-color .2s, transform .15s;
     }
     .contact-link:hover { border-color: var(--accent); transform: translateY(-2px); }
-    .contact-link .cl-icon { font-size: 1.5rem; }
-    .contact-link .cl-title { font-weight: 600; font-size: .95rem; }
-    .contact-link .cl-sub { font-size: .8rem; color: var(--muted); }
+    .cl-icon { font-size: 1.4rem; flex-shrink: 0; }
+    .cl-title { font-weight: 600; font-size: .9rem; }
+    .cl-sub { font-size: .78rem; color: var(--muted); }
 
-    /* STATS OVERLAY */
+    /* ── FOOTER ─────────────────────────────────────── */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 1.75rem 1.25rem;
+      text-align: center;
+      color: var(--muted);
+      font-size: .83rem;
+    }
+    footer a { color: var(--accent); text-decoration: none; }
+
+    /* ── DIVIDER ─────────────────────────────────────── */
+    hr { border: none; border-top: 1px solid var(--border); margin: 1.25rem 0; }
+
+    /* ── STATS OVERLAY ──────────────────────────────── */
     #stats-overlay {
       display: none;
       position: fixed;
-      bottom: 1.5rem;
-      right: 1.5rem;
-      width: 340px;
+      bottom: 1.25rem;
+      right: 1.25rem;
+      width: min(320px, calc(100vw - 2rem));
       background: var(--surface);
       border: 1px solid var(--accent);
       border-radius: .75rem;
-      padding: 1.25rem;
+      padding: 1.1rem;
       z-index: 9999;
-      box-shadow: 0 8px 32px rgba(0,0,0,.5);
+      box-shadow: 0 8px 32px rgba(0,0,0,.6);
     }
     #stats-overlay h4 {
-      font-size: .85rem;
+      font-size: .83rem;
       color: var(--accent);
-      margin-bottom: .75rem;
+      margin-bottom: .65rem;
       display: flex;
       justify-content: space-between;
       align-items: center;
     }
     #stats-overlay .close-btn {
-      cursor: pointer;
-      color: var(--muted);
-      font-size: 1rem;
-      background: none;
-      border: none;
-      padding: 0;
+      cursor: pointer; color: var(--muted); font-size: 1rem;
+      background: none; border: none; padding: 0;
     }
-    #stats-overlay .close-btn:hover { color: var(--text); }
+
+    /* ── RESPONSIVE ─────────────────────────────────── */
+    /* tablet+ (≥600px) */
+    @media (min-width: 600px) {
+      .grid-3 { grid-template-columns: repeat(2, 1fr); }
+      .grid-2 { grid-template-columns: repeat(2, 1fr); }
+      .hero { padding: 5rem 2rem 3.5rem; }
+    }
+    /* desktop (≥900px) */
+    @media (min-width: 900px) {
+      .grid-3 { grid-template-columns: repeat(3, 1fr); }
+      nav { padding: 1rem 2rem; }
+      .nav-links a { font-size: .9rem; }
+      .page-section { padding: 5rem 2rem; }
+      .terminal-wrap { padding: 0 2rem 5rem; }
+      .dim-bar-wrap { width: 120px; }
+    }
+
+    /* mobile nav — hamburger appears, links collapse */
+    @media (max-width: 599px) {
+      .hamburger { display: flex; }
+      .nav-links {
+        display: none;
+        flex-direction: column;
+        align-items: stretch;
+        width: 100%;
+        order: 3;
+        border-top: 1px solid var(--border);
+        padding-top: .5rem;
+      }
+      .nav-links.open { display: flex; }
+      .nav-links a {
+        padding: .6rem .5rem;
+        border-radius: 0;
+        border-bottom: 1px solid var(--border);
+      }
+      .nav-links a:last-child { border-bottom: none; }
+
+      /* show comparison cards, hide table on mobile */
+      .compare-table-wrap { display: none; }
+      .compare-cards { display: block; }
+
+      /* hide progress bars on tiny screens */
+      .dim-bar-wrap { display: none; }
+
+      .grades-row { gap: .5rem; }
+      .grade-pill { min-width: 90px; padding: .5rem .75rem; }
+      .grade-letter { font-size: 1.5rem; }
+    }
   </style>
 </head>
 <body>
@@ -478,16 +534,18 @@
 <!-- NAV -->
 <nav>
   <span class="nav-logo">$ api-scorecard</span>
-  <button class="hamburger" aria-label="Toggle menu" onclick="document.querySelector('.nav-links').classList.toggle('open')">
+  <button class="hamburger" aria-label="Toggle menu"
+    onclick="this.closest('nav').querySelector('.nav-links').classList.toggle('open')">
     <span></span><span></span><span></span>
   </button>
   <div class="nav-links">
-    <a href="#features" onclick="document.querySelector('.nav-links').classList.remove('open')">Features</a>
-    <a href="#dimensions" onclick="document.querySelector('.nav-links').classList.remove('open')">Dimensions</a>
-    <a href="#compare" onclick="document.querySelector('.nav-links').classList.remove('open')">vs Jentic</a>
-    <a href="#install" onclick="document.querySelector('.nav-links').classList.remove('open')">Install</a>
-    <a href="#contact" onclick="document.querySelector('.nav-links').classList.remove('open')">Contact</a>
-    <a href="https://github.com/SheepSeb/cli-jentic" onclick="track('nav','github')">GitHub</a>
+    <a href="#features"   onclick="this.closest('.nav-links').classList.remove('open')">Features</a>
+    <a href="#dimensions" onclick="this.closest('.nav-links').classList.remove('open')">Dimensions</a>
+    <a href="#compare"    onclick="this.closest('.nav-links').classList.remove('open')">vs Jentic</a>
+    <a href="#install"    onclick="this.closest('.nav-links').classList.remove('open')">Install</a>
+    <a href="#contact"    onclick="this.closest('.nav-links').classList.remove('open')">Contact</a>
+    <a href="https://github.com/SheepSeb/cli-jentic" target="_blank" rel="noopener"
+       onclick="track('nav','github')">GitHub</a>
   </div>
 </nav>
 
@@ -495,12 +553,14 @@
 <div class="hero">
   <div class="badge">Open Source CLI</div>
   <h1>Is your API ready for<br><span>AI agents?</span></h1>
-  <p>
-    <strong>api-scorecard</strong> scores your OpenAPI spec across 6 dimensions and gives it a letter grade — so you know exactly what to fix before connecting it to an LLM.
+  <p class="hero-sub">
+    <strong>api-scorecard</strong> scores your OpenAPI spec across 6 dimensions and gives it a letter grade —
+    so you know exactly what to fix before connecting it to an LLM.
   </p>
   <div class="cta-group">
-    <a class="btn btn-primary" href="#install" onclick="track('hero','get-started')">Get Started</a>
-    <a class="btn btn-secondary" href="https://github.com/SheepSeb/cli-jentic" onclick="track('hero','view-github')">View on GitHub</a>
+    <a class="btn btn-primary"    href="#install" onclick="track('hero','get-started')">Get Started</a>
+    <a class="btn btn-secondary"  href="https://github.com/SheepSeb/cli-jentic"
+       target="_blank" rel="noopener" onclick="track('hero','view-github')">View on GitHub</a>
   </div>
 </div>
 
@@ -511,39 +571,34 @@
       <div class="dot dot-red"></div>
       <div class="dot dot-yellow"></div>
       <div class="dot dot-green"></div>
-      <span class="terminal-title">api-scorecard demo</span>
+      <span class="terminal-title">api-scorecard score openapi.yaml</span>
     </div>
     <div class="terminal-body">
       <div><span class="term-prompt">$</span> <span class="term-cmd">api-scorecard score openapi.yaml</span></div>
-      <div class="term-box">
-╭─ API AI Readiness Scorecard ──────────────────────────────╮
-│  Task Manager API  v1.0.0                                  │
-│  openapi.yaml                                              │
-│                                                            │
-│  Overall Score: <span class="term-grade-f">42.3</span>/100  Grade: <span class="term-grade-f">F</span>                         │
-╰────────────────────────────────────────────────────────────╯</div>
-      <br/>
-      <div class="term-out">Dimensions:</div>
-      <div class="term-out">  Foundational Compliance     <span class="term-grade-c">75.0</span>/100  C  ██████████████░░</div>
-      <div class="term-out">  Developer Experience        <span class="term-grade-f">38.5</span>/100  F  ███████░░░░░░░░░</div>
-      <div class="term-out">  AI-Readiness & Agent UX     <span class="term-grade-f">31.2</span>/100  F  ██████░░░░░░░░░░</div>
-      <div class="term-out">  Agent Usability             <span class="term-grade-f">28.0</span>/100  F  █████░░░░░░░░░░░</div>
-      <div class="term-out">  Security & Governance       <span class="term-grade-f">15.0</span>/100  F  ███░░░░░░░░░░░░░</div>
-      <div class="term-out">  AI Discoverability          <span class="term-grade-f">33.3</span>/100  F  ██████░░░░░░░░░░</div>
-      <br/>
-      <div class="term-out">Issues &amp; Recommendations</div>
-      <div class="term-out">  <span style="color:#f78166">✗</span> 4/6 operations lack descriptive intent (&gt;30 char description)</div>
-      <div class="term-out">  <span style="color:#d29922">!</span> 5/6 operations have no documented error responses (4xx/5xx)</div>
+      <div class="term-box">╭─ API AI Readiness Scorecard ──────────────────────╮
+│  Task Manager API  v1.0.0                          │
+│  Overall Score: <span class="term-grade-f">42.3</span>/100  Grade: <span class="term-grade-f">F</span>               │
+╰────────────────────────────────────────────────────╯</div>
+      <br>
+      <div class="term-out">  Foundational Compliance   <span class="term-grade-c">75.0</span>/100  C  ██████████░░░░</div>
+      <div class="term-out">  Developer Experience      <span class="term-grade-f">38.5</span>/100  F  █████░░░░░░░░░</div>
+      <div class="term-out">  AI-Readiness &amp; Agent UX  <span class="term-grade-f">31.2</span>/100  F  ████░░░░░░░░░░</div>
+      <div class="term-out">  Agent Usability           <span class="term-grade-f">28.0</span>/100  F  ███░░░░░░░░░░░</div>
+      <div class="term-out">  Security &amp; Governance    <span class="term-grade-f">15.0</span>/100  F  ██░░░░░░░░░░░░</div>
+      <div class="term-out">  AI Discoverability        <span class="term-grade-f">33.3</span>/100  F  ████░░░░░░░░░░</div>
+      <br>
+      <div class="term-out">  <span style="color:#f78166">✗</span> 4/6 operations lack descriptive intent</div>
+      <div class="term-out">  <span style="color:#d29922">!</span> 5/6 operations have no documented error responses</div>
       <div class="term-out">  <span style="color:#f78166">✗</span> Security schemes defined but operations not secured</div>
-      <br/>
-      <div><span class="term-prompt">$</span> <span class="term-cmd">api-scorecard score openapi.yaml <span class="arg">--json</span> | jq '.overall_score'</span></div>
+      <br>
+      <div><span class="term-prompt">$</span> <span class="term-cmd">api-scorecard score openapi.yaml <span class="term-arg">--json</span> | jq <span class="term-arg">'.overall_score'</span></span></div>
       <div class="term-out">42.3</div>
     </div>
   </div>
 </div>
 
 <!-- FEATURES -->
-<section id="features">
+<section id="features" class="page-section">
   <div class="section-label">Why api-scorecard</div>
   <h2>Ship APIs that AI agents<br>can actually use</h2>
   <p class="subtitle">Most OpenAPI specs are written for humans. AI agents have different needs — and most specs fail silently.</p>
@@ -566,11 +621,11 @@
     <div class="card">
       <div class="card-icon">🔌</div>
       <h3>CI/CD ready</h3>
-      <p>Structured exit codes (0 pass / 1 error / 2 fail) and <code>--json</code> output make it trivial to gate deploys on API quality.</p>
+      <p>Structured exit codes (0 / 1 / 2) and <code>--json</code> output make it trivial to gate deploys on API quality.</p>
     </div>
     <div class="card">
       <div class="card-icon">📦</div>
-      <h3>Zero dependencies on infra</h3>
+      <h3>Zero infra dependencies</h3>
       <p>Pure Python CLI. Runs locally, in Docker, or in any CI runner. Your spec never leaves your machine.</p>
     </div>
     <div class="card">
@@ -582,174 +637,150 @@
 </section>
 
 <!-- DIMENSIONS -->
-<section id="dimensions">
+<section id="dimensions" class="page-section">
   <div class="section-label">Scoring model</div>
   <h2>6 dimensions, 100 points</h2>
   <p class="subtitle">Each dimension targets a distinct quality axis that determines whether an AI agent can discover, call, and reason about your API.</p>
   <div class="dim-grid">
     <div class="dim-row">
-      <div class="card-icon" style="font-size:1.1rem;min-width:1.4rem">🏗️</div>
-      <div class="dim-name">Foundational Compliance <small style="color:var(--muted)">OpenAPI version, info object, valid paths</small></div>
+      <span class="dim-icon">🏗️</span>
+      <div class="dim-name">Foundational Compliance<small>OpenAPI version, info object, valid paths</small></div>
       <div class="dim-weight">20%</div>
       <div class="dim-bar-wrap"><div class="dim-bar" style="width:100%"></div></div>
     </div>
     <div class="dim-row">
-      <div class="card-icon" style="font-size:1.1rem;min-width:1.4rem">👩‍💻</div>
-      <div class="dim-name">Developer Experience <small style="color:var(--muted)">Operation IDs, summaries, examples</small></div>
+      <span class="dim-icon">👩‍💻</span>
+      <div class="dim-name">Developer Experience<small>Operation IDs, summaries, examples</small></div>
       <div class="dim-weight">15%</div>
       <div class="dim-bar-wrap"><div class="dim-bar" style="width:75%"></div></div>
     </div>
     <div class="dim-row">
-      <div class="card-icon" style="font-size:1.1rem;min-width:1.4rem">🤖</div>
-      <div class="dim-name">AI-Readiness &amp; Agent Experience <small style="color:var(--muted)">Descriptions, error schemas, response detail</small></div>
+      <span class="dim-icon">🤖</span>
+      <div class="dim-name">AI-Readiness &amp; Agent Experience<small>Descriptions, error schemas, response detail</small></div>
       <div class="dim-weight">20%</div>
       <div class="dim-bar-wrap"><div class="dim-bar" style="width:100%"></div></div>
     </div>
     <div class="dim-row">
-      <div class="card-icon" style="font-size:1.1rem;min-width:1.4rem">🧠</div>
-      <div class="dim-name">Agent Usability <small style="color:var(--muted)">Semantic IDs, tags, parameter schemas</small></div>
+      <span class="dim-icon">🧠</span>
+      <div class="dim-name">Agent Usability<small>Semantic IDs, tags, parameter schemas</small></div>
       <div class="dim-weight">20%</div>
       <div class="dim-bar-wrap"><div class="dim-bar" style="width:100%"></div></div>
     </div>
     <div class="dim-row">
-      <div class="card-icon" style="font-size:1.1rem;min-width:1.4rem">🔐</div>
-      <div class="dim-name">Security &amp; Governance <small style="color:var(--muted)">Auth schemes, operation security, docs</small></div>
+      <span class="dim-icon">🔐</span>
+      <div class="dim-name">Security &amp; Governance<small>Auth schemes, operation security, docs</small></div>
       <div class="dim-weight">15%</div>
       <div class="dim-bar-wrap"><div class="dim-bar" style="width:75%"></div></div>
     </div>
     <div class="dim-row">
-      <div class="card-icon" style="font-size:1.1rem;min-width:1.4rem">🔍</div>
-      <div class="dim-name">AI Discoverability <small style="color:var(--muted)">API description, tags, external docs</small></div>
+      <span class="dim-icon">🔍</span>
+      <div class="dim-name">AI Discoverability<small>API description, tags, external docs</small></div>
       <div class="dim-weight">10%</div>
       <div class="dim-bar-wrap"><div class="dim-bar" style="width:50%"></div></div>
     </div>
   </div>
-  <br/>
   <div class="grades-row">
-    <div class="grade-pill">
-      <div class="grade-letter gl-a">A</div>
-      <div class="grade-info"><strong>90–100</strong><small>Agent-ready</small></div>
-    </div>
-    <div class="grade-pill">
-      <div class="grade-letter gl-b">B</div>
-      <div class="grade-info"><strong>80–89</strong><small>Near ready</small></div>
-    </div>
-    <div class="grade-pill">
-      <div class="grade-letter gl-c">C</div>
-      <div class="grade-info"><strong>70–79</strong><small>Needs work</small></div>
-    </div>
-    <div class="grade-pill">
-      <div class="grade-letter" style="color:var(--grade-c)">D</div>
-      <div class="grade-info"><strong>60–69</strong><small>Significant gaps</small></div>
-    </div>
-    <div class="grade-pill">
-      <div class="grade-letter gl-f">F</div>
-      <div class="grade-info"><strong>&lt; 60</strong><small>Not ready</small></div>
-    </div>
+    <div class="grade-pill"><div class="grade-letter gl-a">A</div><div class="grade-info"><strong>90–100</strong><small>Agent-ready</small></div></div>
+    <div class="grade-pill"><div class="grade-letter gl-b">B</div><div class="grade-info"><strong>80–89</strong><small>Near ready</small></div></div>
+    <div class="grade-pill"><div class="grade-letter gl-c">C</div><div class="grade-info"><strong>70–79</strong><small>Needs work</small></div></div>
+    <div class="grade-pill"><div class="grade-letter" style="color:var(--grade-c)">D</div><div class="grade-info"><strong>60–69</strong><small>Significant gaps</small></div></div>
+    <div class="grade-pill"><div class="grade-letter gl-f">F</div><div class="grade-info"><strong>&lt; 60</strong><small>Not ready</small></div></div>
   </div>
 </section>
 
 <!-- COMPARISON -->
-<section id="compare">
+<section id="compare" class="page-section">
   <div class="section-label">Comparison</div>
   <h2>api-scorecard vs Jentic</h2>
   <p class="subtitle">Both tools aim to make APIs work better with AI — but they solve fundamentally different problems at different points in your workflow.</p>
-  <div class="compare-wrap">
+
+  <!-- TABLE — shown on tablet/desktop -->
+  <div class="compare-table-wrap">
     <table>
       <thead>
         <tr>
-          <th style="width:35%">Feature</th>
-          <th class="highlight" style="width:32.5%">api-scorecard</th>
-          <th style="width:32.5%">Jentic</th>
+          <th style="width:34%">Feature</th>
+          <th class="hl" style="width:33%">api-scorecard</th>
+          <th style="width:33%">Jentic</th>
         </tr>
       </thead>
       <tbody>
-        <tr>
-          <td class="feature">Primary purpose</td>
-          <td class="yes"><span class="check"></span>Score &amp; improve OpenAPI specs for AI-readiness</td>
-          <td class="partial"><span class="dash"></span>Discover &amp; execute APIs at runtime for AI agents</td>
-        </tr>
-        <tr>
-          <td class="feature">When you use it</td>
-          <td class="yes"><span class="check"></span>Before &amp; during API development (design time)</td>
-          <td class="no"><span class="cross"></span>When building AI agents that call APIs (runtime)</td>
-        </tr>
-        <tr>
-          <td class="feature">Input</td>
-          <td class="yes"><span class="check"></span>Local OpenAPI / Swagger YAML or JSON file</td>
-          <td class="no"><span class="cross"></span>Natural language query to discover APIs in registry</td>
-        </tr>
-        <tr>
-          <td class="feature">Output</td>
-          <td class="yes"><span class="check"></span>Scored report with letter grade + actionable fixes</td>
-          <td class="no"><span class="cross"></span>Executable workflow / API call ready for an agent</td>
-        </tr>
-        <tr>
-          <td class="feature">Open Source</td>
-          <td class="yes"><span class="check"></span>Fully open source (MIT)</td>
-          <td class="partial"><span class="dash"></span>SDK open source, platform is SaaS</td>
-        </tr>
-        <tr>
-          <td class="feature">Runs locally</td>
-          <td class="yes"><span class="check"></span>100% offline — spec never leaves your machine</td>
-          <td class="no"><span class="cross"></span>Requires internet access to Jentic cloud registry</td>
-        </tr>
-        <tr>
-          <td class="feature">CI/CD integration</td>
-          <td class="yes"><span class="check"></span>Exit codes + JSON output, drop into any pipeline</td>
-          <td class="no"><span class="cross"></span>Not designed for CI quality gates</td>
-        </tr>
-        <tr>
-          <td class="feature">Actionable fix guidance</td>
-          <td class="yes"><span class="check"></span>Exact JSON path + plain-English recommendation per issue</td>
-          <td class="no"><span class="cross"></span>No spec improvement guidance</td>
-        </tr>
-        <tr>
-          <td class="feature">Multi-dimension scoring</td>
-          <td class="yes"><span class="check"></span>6 weighted dimensions with per-dimension grades</td>
-          <td class="no"><span class="cross"></span>No quality scoring model</td>
-        </tr>
-        <tr>
-          <td class="feature">API execution / calling</td>
-          <td class="no"><span class="cross"></span>Analysis only — does not call your API</td>
-          <td class="yes"><span class="check"></span>Core feature — finds and executes API calls for agents</td>
-        </tr>
-        <tr>
-          <td class="feature">API registry / discovery</td>
-          <td class="no"><span class="cross"></span>Works on a single spec you provide</td>
-          <td class="yes"><span class="check"></span>Searches a large registry of third-party APIs</td>
-        </tr>
-        <tr>
-          <td class="feature">Requires account / login</td>
-          <td class="yes"><span class="check"></span>No — zero signup, just install and run</td>
-          <td class="partial"><span class="dash"></span>Free tier available, full registry needs API key</td>
-        </tr>
-        <tr>
-          <td class="feature">Installation</td>
-          <td class="yes"><span class="check"></span><code>pip install reuse-api</code></td>
-          <td class="no"><span class="cross"></span><code>pip install jentic</code></td>
-        </tr>
-        <tr>
-          <td class="feature">Best used by</td>
-          <td class="yes"><span class="check"></span>API developers, platform engineers, DevOps teams</td>
-          <td class="no"><span class="cross"></span>AI agent developers integrating third-party APIs</td>
-        </tr>
+        <tr><td class="feat">Primary purpose</td><td class="yes"><span class="ck"></span>Score &amp; improve OpenAPI specs for AI-readiness</td><td class="par"><span class="da"></span>Discover &amp; execute APIs at runtime for AI agents</td></tr>
+        <tr><td class="feat">When you use it</td><td class="yes"><span class="ck"></span>Before &amp; during API development (design time)</td><td class="no"><span class="cx"></span>When building AI agents that call APIs (runtime)</td></tr>
+        <tr><td class="feat">Input</td><td class="yes"><span class="ck"></span>Local OpenAPI / Swagger YAML or JSON file</td><td class="no"><span class="cx"></span>Natural language query to discover APIs</td></tr>
+        <tr><td class="feat">Output</td><td class="yes"><span class="ck"></span>Scored report with letter grade + fixes</td><td class="no"><span class="cx"></span>Executable workflow / API call for an agent</td></tr>
+        <tr><td class="feat">Open Source</td><td class="yes"><span class="ck"></span>Fully open source (MIT)</td><td class="par"><span class="da"></span>SDK open source, platform is SaaS</td></tr>
+        <tr><td class="feat">Runs locally</td><td class="yes"><span class="ck"></span>100% offline — spec never leaves your machine</td><td class="no"><span class="cx"></span>Requires internet access to Jentic cloud registry</td></tr>
+        <tr><td class="feat">CI/CD integration</td><td class="yes"><span class="ck"></span>Exit codes + JSON output, drop into any pipeline</td><td class="no"><span class="cx"></span>Not designed for CI quality gates</td></tr>
+        <tr><td class="feat">Actionable fix guidance</td><td class="yes"><span class="ck"></span>Exact JSON path + plain-English recommendation</td><td class="no"><span class="cx"></span>No spec improvement guidance</td></tr>
+        <tr><td class="feat">Multi-dimension scoring</td><td class="yes"><span class="ck"></span>6 weighted dimensions with per-dimension grades</td><td class="no"><span class="cx"></span>No quality scoring model</td></tr>
+        <tr><td class="feat">API execution / calling</td><td class="no"><span class="cx"></span>Analysis only — does not call your API</td><td class="yes"><span class="ck"></span>Core feature — finds and executes API calls</td></tr>
+        <tr><td class="feat">API registry / discovery</td><td class="no"><span class="cx"></span>Works on a single spec you provide</td><td class="yes"><span class="ck"></span>Searches a large registry of third-party APIs</td></tr>
+        <tr><td class="feat">Requires account</td><td class="yes"><span class="ck"></span>No — zero signup, just install and run</td><td class="par"><span class="da"></span>Free tier available, full registry needs API key</td></tr>
+        <tr><td class="feat">Best used by</td><td class="yes"><span class="ck"></span>API developers, platform engineers, DevOps</td><td class="no"><span class="cx"></span>AI agent developers integrating third-party APIs</td></tr>
       </tbody>
     </table>
   </div>
-  <br/>
+
+  <!-- CARDS — shown on mobile only -->
+  <div class="compare-cards">
+    <div class="cmp-card">
+      <div class="cmp-card-header">Primary purpose &amp; when to use</div>
+      <div class="cmp-row">
+        <div class="cmp-cell"><div class="cmp-cell-label acc">api-scorecard</div><span class="cmp-yes">✓ Score &amp; improve OpenAPI specs (design time)</span></div>
+        <div class="cmp-cell"><div class="cmp-cell-label mut">Jentic</div><span class="cmp-par">~ Discover &amp; execute APIs (runtime)</span></div>
+      </div>
+    </div>
+    <div class="cmp-card">
+      <div class="cmp-card-header">Input / Output</div>
+      <div class="cmp-row">
+        <div class="cmp-cell"><div class="cmp-cell-label acc">api-scorecard</div><span class="cmp-yes">✓ Local YAML/JSON → letter grade + fixes</span></div>
+        <div class="cmp-cell"><div class="cmp-cell-label mut">Jentic</div><span class="cmp-no">✗ Natural language → executable API call</span></div>
+      </div>
+    </div>
+    <div class="cmp-card">
+      <div class="cmp-card-header">Open Source &amp; local</div>
+      <div class="cmp-row">
+        <div class="cmp-cell"><div class="cmp-cell-label acc">api-scorecard</div><span class="cmp-yes">✓ Fully open source, 100% offline</span></div>
+        <div class="cmp-cell"><div class="cmp-cell-label mut">Jentic</div><span class="cmp-par">~ SDK open source, needs internet</span></div>
+      </div>
+    </div>
+    <div class="cmp-card">
+      <div class="cmp-card-header">CI/CD &amp; fix guidance</div>
+      <div class="cmp-row">
+        <div class="cmp-cell"><div class="cmp-cell-label acc">api-scorecard</div><span class="cmp-yes">✓ Exit codes, JSON output, actionable paths</span></div>
+        <div class="cmp-cell"><div class="cmp-cell-label mut">Jentic</div><span class="cmp-no">✗ Not designed for CI</span></div>
+      </div>
+    </div>
+    <div class="cmp-card">
+      <div class="cmp-card-header">API execution &amp; discovery</div>
+      <div class="cmp-row">
+        <div class="cmp-cell"><div class="cmp-cell-label acc">api-scorecard</div><span class="cmp-no">✗ Analysis only</span></div>
+        <div class="cmp-cell"><div class="cmp-cell-label mut">Jentic</div><span class="cmp-yes">✓ Executes APIs, large registry</span></div>
+      </div>
+    </div>
+    <div class="cmp-card">
+      <div class="cmp-card-header">Account required</div>
+      <div class="cmp-row">
+        <div class="cmp-cell"><div class="cmp-cell-label acc">api-scorecard</div><span class="cmp-yes">✓ Zero signup needed</span></div>
+        <div class="cmp-cell"><div class="cmp-cell-label mut">Jentic</div><span class="cmp-par">~ Free tier, API key for full access</span></div>
+      </div>
+    </div>
+  </div>
+
+  <br>
   <div class="card" style="background:rgba(88,166,255,.06);border-color:rgba(88,166,255,.3)">
     <h3 style="color:var(--accent);margin-bottom:.5rem">They're complementary, not competing</h3>
     <p style="color:var(--muted)">
       Use <strong style="color:var(--text)">api-scorecard</strong> to verify your OpenAPI spec is high-quality and AI-ready.
       Then use <strong style="color:var(--text)">Jentic</strong> to let agents discover and call it at runtime.
-      A higher api-scorecard grade means Jentic agents can use your API more reliably — fewer hallucinations, better tool selection.
+      A higher api-scorecard grade means Jentic agents can use your API more reliably.
     </p>
   </div>
 </section>
 
 <!-- INSTALL -->
-<section id="install">
+<section id="install" class="page-section">
   <div class="section-label">Get started</div>
   <h2>Up and running in 30 seconds</h2>
   <p class="subtitle">No account. No config. Just point it at an OpenAPI spec.</p>
@@ -757,52 +788,52 @@
     <div>
       <div class="install-tabs">
         <button class="tab-btn active" onclick="showTab('uv');track('install','tab-uv')">uv (recommended)</button>
-        <button class="tab-btn" onclick="showTab('pip');track('install','tab-pip')">pip</button>
+        <button class="tab-btn"        onclick="showTab('pip');track('install','tab-pip')">pip</button>
       </div>
       <div id="tab-uv" class="code-block">
-        <span class="comment"># Install</span><br/>
-        <span class="cmd">uv pip install</span> <span class="arg">-e git+https://github.com/SheepSeb/reuse_api</span><br/>
-        <br/>
-        <span class="comment"># Score your spec</span><br/>
-        <span class="cmd">api-scorecard score</span> <span class="arg">path/to/openapi.yaml</span><br/>
-        <br/>
-        <span class="comment"># Try the built-in demo</span><br/>
+        <span class="comment"># Install</span><br>
+        <span class="cmd">uv pip install</span> <span class="arg">-e git+https://github.com/SheepSeb/cli-jentic</span><br>
+        <br>
+        <span class="comment"># Score your spec</span><br>
+        <span class="cmd">api-scorecard score</span> <span class="arg">path/to/openapi.yaml</span><br>
+        <br>
+        <span class="comment"># Try the built-in demo</span><br>
         <span class="cmd">api-scorecard demo</span>
       </div>
       <div id="tab-pip" class="code-block" style="display:none">
-        <span class="comment"># Clone &amp; install</span><br/>
-        <span class="cmd">git clone</span> <span class="arg">https://github.com/SheepSeb/reuse_api</span><br/>
-        <span class="cmd">pip install</span> <span class="arg">-e ./reuse_api</span><br/>
-        <br/>
-        <span class="comment"># Score your spec</span><br/>
-        <span class="cmd">api-scorecard score</span> <span class="arg">path/to/openapi.yaml</span><br/>
-        <br/>
-        <span class="comment"># JSON output for CI</span><br/>
+        <span class="comment"># Clone &amp; install</span><br>
+        <span class="cmd">git clone</span> <span class="arg">https://github.com/SheepSeb/cli-jentic</span><br>
+        <span class="cmd">pip install</span> <span class="arg">-e ./cli-jentic</span><br>
+        <br>
+        <span class="comment"># Score your spec</span><br>
+        <span class="cmd">api-scorecard score</span> <span class="arg">path/to/openapi.yaml</span><br>
+        <br>
+        <span class="comment"># JSON output for CI</span><br>
         <span class="cmd">api-scorecard score</span> <span class="arg">openapi.yaml --json</span>
       </div>
     </div>
     <div>
-      <div class="card" style="height:100%">
+      <div class="card">
         <h3>Exit codes</h3>
-        <hr/>
-        <div style="display:flex;flex-direction:column;gap:.75rem;margin-top:1rem">
-          <div style="display:flex;gap:1rem;align-items:center">
-            <code style="background:var(--surface2);padding:.2rem .5rem;border-radius:.3rem;color:var(--accent2);min-width:1.5rem;text-align:center">0</code>
-            <span style="color:var(--muted)">Score &ge; 60 — passing</span>
+        <hr>
+        <div style="display:flex;flex-direction:column;gap:.7rem;margin-top:.9rem">
+          <div style="display:flex;gap:.85rem;align-items:center">
+            <code style="background:var(--surface2);padding:.2rem .5rem;border-radius:.3rem;color:var(--accent2);min-width:1.4rem;text-align:center;flex-shrink:0">0</code>
+            <span style="color:var(--muted);font-size:.88rem">Score &ge; 60 — passing</span>
           </div>
-          <div style="display:flex;gap:1rem;align-items:center">
-            <code style="background:var(--surface2);padding:.2rem .5rem;border-radius:.3rem;color:var(--grade-f);min-width:1.5rem;text-align:center">1</code>
-            <span style="color:var(--muted)">Error reading or parsing the spec</span>
+          <div style="display:flex;gap:.85rem;align-items:center">
+            <code style="background:var(--surface2);padding:.2rem .5rem;border-radius:.3rem;color:var(--grade-f);min-width:1.4rem;text-align:center;flex-shrink:0">1</code>
+            <span style="color:var(--muted);font-size:.88rem">Error reading or parsing the spec</span>
           </div>
-          <div style="display:flex;gap:1rem;align-items:center">
-            <code style="background:var(--surface2);padding:.2rem .5rem;border-radius:.3rem;color:var(--grade-c);min-width:1.5rem;text-align:center">2</code>
-            <span style="color:var(--muted)">Score &lt; 60 — failing grade</span>
+          <div style="display:flex;gap:.85rem;align-items:center">
+            <code style="background:var(--surface2);padding:.2rem .5rem;border-radius:.3rem;color:var(--grade-c);min-width:1.4rem;text-align:center;flex-shrink:0">2</code>
+            <span style="color:var(--muted);font-size:.88rem">Score &lt; 60 — failing grade</span>
           </div>
         </div>
-        <hr style="margin-top:1.25rem"/>
-        <p style="color:var(--muted);font-size:.85rem;margin-top:.75rem">
-          Gate your CI pipeline on API quality:<br/>
-          <code style="color:var(--accent)">api-scorecard score openapi.yaml || exit 1</code>
+        <hr style="margin-top:1.1rem">
+        <p style="color:var(--muted);font-size:.82rem;margin-top:.7rem">
+          Gate your CI pipeline on API quality:<br>
+          <code style="color:var(--accent);font-size:.8rem">api-scorecard score spec.yaml || exit 1</code>
         </p>
       </div>
     </div>
@@ -810,59 +841,50 @@
 </section>
 
 <!-- CONTACT -->
-<section id="contact">
+<section id="contact" class="page-section">
   <div class="section-label">Get in touch</div>
   <h2>Contact</h2>
   <p class="subtitle">Questions, feedback, or want to contribute? Reach out on any of these channels.</p>
   <div class="contact-grid">
-    <a class="contact-link" href="https://github.com/SheepSeb" target="_blank" rel="noopener" onclick="track('contact','github-profile')">
+    <a class="contact-link" href="https://github.com/SheepSeb" target="_blank" rel="noopener"
+       onclick="track('contact','github-profile')">
       <span class="cl-icon">
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.3 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 21.795 24 17.295 24 12c0-6.63-5.37-12-12-12"/></svg>
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.3 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 21.795 24 17.295 24 12c0-6.63-5.37-12-12-12"/></svg>
       </span>
-      <div>
-        <div class="cl-title">GitHub</div>
-        <div class="cl-sub">@SheepSeb</div>
-      </div>
+      <div><div class="cl-title">GitHub</div><div class="cl-sub">@SheepSeb</div></div>
     </a>
-    <a class="contact-link" href="https://github.com/SheepSeb/cli-jentic/issues/new" target="_blank" rel="noopener" onclick="track('contact','open-issue')">
+    <a class="contact-link" href="https://github.com/SheepSeb/cli-jentic/issues/new"
+       target="_blank" rel="noopener" onclick="track('contact','open-issue')">
       <span class="cl-icon">🐛</span>
-      <div>
-        <div class="cl-title">Open an Issue</div>
-        <div class="cl-sub">Bug reports &amp; feature requests</div>
-      </div>
+      <div><div class="cl-title">Open an Issue</div><div class="cl-sub">Bug reports &amp; feature requests</div></div>
     </a>
-    <a class="contact-link" href="https://github.com/SheepSeb/cli-jentic/discussions" target="_blank" rel="noopener" onclick="track('contact','discussions')">
+    <a class="contact-link" href="https://github.com/SheepSeb/cli-jentic/discussions"
+       target="_blank" rel="noopener" onclick="track('contact','discussions')">
       <span class="cl-icon">💬</span>
-      <div>
-        <div class="cl-title">Discussions</div>
-        <div class="cl-sub">Questions &amp; ideas</div>
-      </div>
+      <div><div class="cl-title">Discussions</div><div class="cl-sub">Questions &amp; ideas</div></div>
     </a>
-    <a class="contact-link" href="https://github.com/SheepSeb/cli-jentic/fork" target="_blank" rel="noopener" onclick="track('contact','fork')">
+    <a class="contact-link" href="https://github.com/SheepSeb/cli-jentic/fork"
+       target="_blank" rel="noopener" onclick="track('contact','fork')">
       <span class="cl-icon">🍴</span>
-      <div>
-        <div class="cl-title">Fork &amp; Contribute</div>
-        <div class="cl-sub">PRs welcome</div>
-      </div>
+      <div><div class="cl-title">Fork &amp; Contribute</div><div class="cl-sub">PRs welcome</div></div>
     </a>
   </div>
 </section>
 
-<!-- STATS OVERLAY (press Shift+S to open) -->
+<!-- STATS OVERLAY (press Shift+S) -->
 <div id="stats-overlay">
   <h4>
     Click analytics (local)
     <button class="close-btn" onclick="toggleStats()">✕</button>
   </h4>
   <div id="stats-body"><p style="color:#8b949e;font-size:.85rem">No clicks recorded yet.</p></div>
-  <p style="color:#8b949e;font-size:.75rem;margin-top:.75rem">Stored in localStorage · GA4 events also sent · Press Shift+S to close</p>
+  <p style="color:#8b949e;font-size:.72rem;margin-top:.65rem">localStorage · GA4 events also fired · Shift+S to close</p>
 </div>
 
 <!-- FOOTER -->
 <footer>
   <p>
-    <strong>api-scorecard</strong> — Open source under MIT.
-    Built for the age of AI agents.<br/>
+    <strong>api-scorecard</strong> — Open source under MIT. Built for the age of AI agents.<br>
     <a href="https://github.com/SheepSeb/cli-jentic" onclick="track('footer','github')">GitHub</a> &nbsp;·&nbsp;
     <a href="https://github.com/SheepSeb/cli-jentic/issues" onclick="track('footer','issues')">Issues</a> &nbsp;·&nbsp;
     <a href="https://github.com/SheepSeb/cli-jentic/blob/web/README.md" onclick="track('footer','docs')">Docs</a>
@@ -871,13 +893,12 @@
 
 <script>
   function showTab(tab) {
-    document.getElementById('tab-uv').style.display = tab === 'uv' ? 'block' : 'none';
+    document.getElementById('tab-uv').style.display  = tab === 'uv'  ? 'block' : 'none';
     document.getElementById('tab-pip').style.display = tab === 'pip' ? 'block' : 'none';
     document.querySelectorAll('.tab-btn').forEach((btn, i) => {
       btn.classList.toggle('active', (i === 0 && tab === 'uv') || (i === 1 && tab === 'pip'));
     });
   }
 </script>
-
 </body>
 </html>
