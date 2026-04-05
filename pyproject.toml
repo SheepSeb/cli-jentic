@@ -1,9 +1,29 @@
 [project]
 name = "reuse-api"
 version = "0.1.0"
-description = "OpenAPI AI Readiness Scorecard CLI"
+description = "OpenAPI AI Readiness Scorecard & Sandbox — score and simulate your APIs for agentic use"
 readme = "README.md"
 requires-python = ">=3.11"
+license = { text = "MIT" }
+authors = [{ name = "SheepSeb" }]
+keywords = [
+    "openapi", "api", "ai", "agents", "scorecard",
+    "mock-server", "sandbox", "llm", "agentic",
+]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Environment :: Console",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Topic :: Internet :: WWW/HTTP",
+    "Topic :: Utilities",
+]
 dependencies = [
     "typer[all]>=0.9",
     "pyyaml>=6",
@@ -13,11 +33,20 @@ dependencies = [
     "requests>=2.31",
 ]
 
+[project.urls]
+Homepage      = "https://sheepseb.github.io/cli-jentic"
+Repository    = "https://github.com/SheepSeb/cli-jentic"
+"Bug Tracker" = "https://github.com/SheepSeb/cli-jentic/issues"
+
 [project.scripts]
 api-scorecard = "scorecard.cli:app"
 
+# ── Build ──────────────────────────────────────────────────────────────────────
 [tool.hatch.build.targets.wheel]
 packages = ["scorecard", "sandbox"]
+
+[tool.hatch.build.targets.wheel.force-include]
+"sandbox/data/sample_spec.yaml" = "sandbox/data/sample_spec.yaml"
 
 [build-system]
 requires = ["hatchling"]

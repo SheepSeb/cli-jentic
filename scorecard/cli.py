@@ -16,7 +16,7 @@ app = typer.Typer(
     add_completion=False,
 )
 
-_SAMPLE_SPEC = Path(__file__).parent.parent / "sample_spec.yaml"
+_SAMPLE_SPEC = Path(__file__).parent.parent / "sandbox" / "data" / "sample_spec.yaml"
 
 
 def _run_and_output(spec_path: str, as_json: bool) -> None:
@@ -47,6 +47,14 @@ def score(
 ) -> None:
     """Score an OpenAPI spec file for AI-readiness."""
     _run_and_output(spec, json)
+
+
+# Add sandbox as a subcommand group — must happen after app is defined
+# and after sandbox is importable (no circular deps since sandbox imports
+# from scorecard.parser / scorecard.dimensions, not scorecard.cli).
+from sandbox.cli import sandbox_app  # noqa: E402
+
+app.add_typer(sandbox_app, name="sandbox")
 
 
 @app.command()

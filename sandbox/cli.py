@@ -21,7 +21,7 @@ sandbox_app = typer.Typer(
     add_completion=False,
 )
 
-_SAMPLE_SPEC = Path(__file__).parent.parent / "sample_spec.yaml"
+_SAMPLE_SPEC = Path(__file__).parent / "data" / "sample_spec.yaml"
 
 DEFAULT_HOST = "127.0.0.1"
 DEFAULT_PORT = 8765
