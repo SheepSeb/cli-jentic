@@ -70,6 +70,9 @@
       --grade-b: #58a6ff;
       --grade-c: #d29922;
       --grade-f: #f78166;
+      --pink: #e040fb;
+      --pink-dim: rgba(224, 64, 251, 0.18);
+      --pink-border: rgba(224, 64, 251, 0.4);
     }
 
     /* ── RESET ──────────────────────────────────────── */
@@ -543,6 +546,102 @@
       background: none; border: none; padding: 0;
     }
 
+    /* ── CLITIC ─────────────────────────────────────── */
+    .clitic-label { color: var(--pink) !important; }
+
+    /* animated (*) logo */
+    @keyframes clitic-glow {
+      0%   { color: var(--pink); text-shadow: 0 0 10px rgba(224,64,251,.5); }
+      30%  { color: #fff;        text-shadow: 0 0 18px rgba(255,255,255,.7); }
+      60%  { color: #ff80ff;     text-shadow: 0 0 14px rgba(255,128,255,.6); }
+      100% { color: var(--pink); text-shadow: 0 0 10px rgba(224,64,251,.5); }
+    }
+    @keyframes clitic-parens {
+      0%, 100% { color: rgba(224,64,251,.7); }
+      50%       { color: rgba(224,64,251,1);  }
+    }
+    .clitic-logo {
+      font-family: "SF Mono", "Fira Code", monospace;
+      font-size: 3.2rem;
+      font-weight: 900;
+      line-height: 1;
+      letter-spacing: -.02em;
+      user-select: none;
+    }
+    .clitic-logo .paren { animation: clitic-parens 2s ease-in-out infinite; }
+    .clitic-logo .star  { animation: clitic-glow 1.6s ease-in-out infinite; }
+
+    .clitic-hero {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      gap: 1rem;
+      margin-bottom: 2.75rem;
+    }
+    .clitic-tagline {
+      font-size: clamp(1.6rem, 4.5vw, 2.4rem);
+      font-weight: 800;
+      line-height: 1.2;
+      max-width: 640px;
+    }
+    .clitic-tagline span { color: var(--pink); }
+    .clitic-sub {
+      color: var(--muted);
+      font-size: 1rem;
+      max-width: 520px;
+    }
+
+    /* clitic terminal */
+    .clitic-terminal {
+      background: var(--surface);
+      border: 1px solid var(--pink-border);
+      border-radius: .75rem;
+      overflow: hidden;
+      font-family: "SF Mono", "Fira Code", "Cascadia Code", monospace;
+      font-size: .8rem;
+      box-shadow: 0 0 32px rgba(224,64,251,.1);
+      margin-bottom: 2rem;
+    }
+    .clitic-terminal .terminal-bar {
+      background: linear-gradient(135deg, rgba(224,64,251,.15) 0%, var(--surface2) 100%);
+      border-bottom: 1px solid var(--pink-border);
+    }
+    .term-pink   { color: var(--pink); font-weight: 700; }
+    .term-pink-d { color: rgba(224,64,251,.65); }
+
+    /* phase lines fade in */
+    .phase-line { opacity: 0; animation: fadeInUp .4s ease forwards; }
+    .phase-line:nth-child(1) { animation-delay: .2s; }
+    .phase-line:nth-child(2) { animation-delay: .8s; }
+    .phase-line:nth-child(3) { animation-delay: 1.4s; }
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(4px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* clitic dimension rows */
+    .clitic-dim-grid { display: grid; gap: .65rem; margin-top: 2rem; }
+    .clitic-dim-row {
+      display: flex;
+      align-items: center;
+      gap: .75rem;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: .5rem;
+      padding: .8rem 1rem;
+      transition: border-color .2s;
+    }
+    .clitic-dim-row:hover { border-color: var(--pink-border); }
+    .clitic-dim-bar { height: 100%; border-radius: 3px; background: var(--pink); }
+    .clitic-try {
+      margin-top: 2.5rem;
+      padding: 1.5rem;
+      background: linear-gradient(135deg, var(--pink-dim) 0%, rgba(224,64,251,.06) 100%);
+      border: 1px solid var(--pink-border);
+      border-radius: .75rem;
+    }
+
     /* ── RESPONSIVE ─────────────────────────────────── */
     /* tablet+ (≥600px) */
     @media (min-width: 600px) {
@@ -604,6 +703,8 @@
   </button>
   <div class="nav-links">
     <a href="#features"   onclick="this.closest('.nav-links').classList.remove('open')">Features</a>
+    <a href="#clitic"     onclick="this.closest('.nav-links').classList.remove('open')"
+       style="color:var(--pink);font-weight:600">(*)&nbsp;clitic</a>
     <a href="#dimensions" onclick="this.closest('.nav-links').classList.remove('open')">Dimensions</a>
     <a href="#compare"    onclick="this.closest('.nav-links').classList.remove('open')">vs Jentic</a>
     <a href="#install"    onclick="this.closest('.nav-links').classList.remove('open')">Install</a>
@@ -698,6 +799,117 @@
       <p>A single A–F grade tells the whole story. Drill down per-dimension to understand exactly where quality is lost.</p>
     </div>
   </div>
+</section>
+
+<!-- CLITIC -->
+<section id="clitic" class="page-section">
+
+  <!-- hero -->
+  <div class="clitic-hero">
+    <div class="clitic-logo">
+      <span class="paren">(</span><span class="star">*</span><span class="paren">)</span>
+    </div>
+    <div class="badge" style="background:var(--pink-dim);color:var(--pink);border-color:var(--pink-border)">
+      New feature · clitic
+    </div>
+    <h2 class="clitic-tagline">Does your CLI tool speak<br><span>AI agent?</span></h2>
+    <p class="clitic-sub">
+      <strong>clitic</strong> — CLI Intelligence &amp; Compliance Tester — probes any command-line
+      tool and scores it across 5 dimensions. Know exactly how well your CLI will work
+      inside an AI agent loop before you ship.
+    </p>
+  </div>
+
+  <!-- terminal demo -->
+  <div style="max-width:720px;margin:0 auto">
+    <div class="clitic-terminal">
+      <div class="terminal-bar" style="display:flex;align-items:center;gap:.45rem;padding:.55rem 1rem">
+        <div class="dot dot-red"></div>
+        <div class="dot dot-yellow"></div>
+        <div class="dot dot-green"></div>
+        <span class="terminal-title">cli-jentic clitic demo</span>
+      </div>
+      <div class="terminal-body">
+
+        <div><span class="term-prompt">$</span> <span class="term-cmd">cli-jentic clitic <span class="term-pink">demo</span></span></div>
+        <br>
+
+        <!-- animated phase lines -->
+        <div class="phase-line"><span class="term-pink-d">(*)</span>  <span class="term-dim">Feeding</span> <span class="term-white">git</span> <span class="term-dim">into the tester...</span></div>
+        <div class="phase-line"><span class="term-pink"  >(*)</span>  <span class="term-pink">Eating</span> <span class="term-white">git</span> <span class="term-dim">(nom nom nom)...</span></div>
+        <div class="phase-line"><span class="term-pink-d">(*)</span>  <span class="term-dim">Digesting the results for</span> <span class="term-white">git</span><span class="term-dim">...</span></div>
+        <br>
+
+        <!-- report panel -->
+        <div class="term-box" style="border-color:rgba(224,64,251,.35)">╭──── <span class="term-pink">(*) clitic</span> <span class="term-dim">— CLI Intelligence &amp; Compliance Tester</span> ────╮
+│  <span class="term-white">git</span>  <span class="term-dim">/usr/bin/git</span>                                       │
+│  Overall Score: <span class="term-grade-c">77.5</span>/100  Grade: <span class="term-grade-c">C</span>                         │
+╰────────────────────────────────────────────────────────────╯</div>
+
+        <div class="term-out">  Help &amp; Discoverability      <span style="color:var(--grade-a);font-weight:700">100.0</span>/100  A  <span style="color:var(--grade-a)">████████████████████</span></div>
+        <div class="term-out">  Machine-Readable Output      <span class="term-grade-f"> 15.0</span>/100  F  <span style="color:var(--grade-f)">███░░░░░░░░░░░░░░░░░</span></div>
+        <div class="term-out">  Exit Code Semantics          <span style="color:var(--grade-a);font-weight:700">100.0</span>/100  A  <span style="color:var(--grade-a)">████████████████████</span></div>
+        <div class="term-out">  Error Handling               <span style="color:var(--grade-a);font-weight:700">100.0</span>/100  A  <span style="color:var(--grade-a)">████████████████████</span></div>
+        <div class="term-out">  Argument &amp; Interface Design  <span style="color:var(--grade-a);font-weight:700"> 91.7</span>/100  A  <span style="color:var(--grade-a)">██████████████████░░</span></div>
+        <br>
+        <div class="term-out">  <span style="color:var(--grade-f)">x</span> No JSON output support — agents cannot reliably parse tool output</div>
+        <div class="term-out">  <span style="color:var(--grade-c)">!</span> No mention of JSON or structured output flags in help text</div>
+        <div class="term-out">  <span style="color:var(--grade-c)">!</span> Only 0/3 subcommands mention output format flags</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 5 dimensions -->
+  <div style="max-width:720px;margin:0 auto">
+    <div class="section-label clitic-label" style="margin-top:1rem">Scoring model</div>
+    <h3 style="font-size:1.25rem;margin-bottom:.4rem;font-weight:700">5 dimensions, 100 points</h3>
+    <p style="color:var(--muted);font-size:.9rem;margin-bottom:.5rem">Each dimension probes a different aspect of agent-friendliness by actually running the tool.</p>
+
+    <div class="clitic-dim-grid">
+      <div class="clitic-dim-row">
+        <span class="dim-icon">🔍</span>
+        <div class="dim-name">Help &amp; Discoverability<small>--help quality, subcommands, --version</small></div>
+        <div class="dim-weight" style="color:var(--pink)">25%</div>
+        <div class="dim-bar-wrap"><div class="clitic-dim-bar" style="width:100%"></div></div>
+      </div>
+      <div class="clitic-dim-row">
+        <span class="dim-icon">📤</span>
+        <div class="dim-name">Machine-Readable Output<small>JSON support, no raw ANSI in pipes</small></div>
+        <div class="dim-weight" style="color:var(--pink)">25%</div>
+        <div class="dim-bar-wrap"><div class="clitic-dim-bar" style="width:100%"></div></div>
+      </div>
+      <div class="clitic-dim-row">
+        <span class="dim-icon">🚦</span>
+        <div class="dim-name">Exit Code Semantics<small>0 on help/version, non-zero on bad args</small></div>
+        <div class="dim-weight" style="color:var(--pink)">20%</div>
+        <div class="dim-bar-wrap"><div class="clitic-dim-bar" style="width:80%"></div></div>
+      </div>
+      <div class="clitic-dim-row">
+        <span class="dim-icon">⚠️</span>
+        <div class="dim-name">Error Handling<small>Errors to stderr, informative messages, no stack traces</small></div>
+        <div class="dim-weight" style="color:var(--pink)">15%</div>
+        <div class="dim-bar-wrap"><div class="clitic-dim-bar" style="width:60%"></div></div>
+      </div>
+      <div class="clitic-dim-row">
+        <span class="dim-icon">🎛️</span>
+        <div class="dim-name">Argument &amp; Interface Design<small>GNU flags, kebab-case, standard conventions</small></div>
+        <div class="dim-weight" style="color:var(--pink)">15%</div>
+        <div class="dim-bar-wrap"><div class="clitic-dim-bar" style="width:60%"></div></div>
+      </div>
+    </div>
+
+    <!-- try it -->
+    <div class="clitic-try">
+      <div style="font-size:.75rem;font-weight:700;text-transform:uppercase;letter-spacing:.12em;color:var(--pink);margin-bottom:.75rem">Try it</div>
+      <div style="display:flex;flex-direction:column;gap:.4rem;font-family:'SF Mono','Fira Code',monospace;font-size:.82rem">
+        <div><span class="term-prompt">$</span> <span class="term-cmd">cli-jentic clitic score <span class="term-pink">git</span></span></div>
+        <div><span class="term-prompt">$</span> <span class="term-cmd">cli-jentic clitic score <span class="term-pink">gh</span></span></div>
+        <div><span class="term-prompt">$</span> <span class="term-cmd">cli-jentic clitic score <span class="term-pink">curl</span></span></div>
+        <div><span class="term-prompt">$</span> <span class="term-cmd">cli-jentic clitic score <span class="term-pink">your-tool</span></span></div>
+      </div>
+    </div>
+  </div>
+
 </section>
 
 <!-- DIMENSIONS -->
@@ -879,7 +1091,10 @@
         <span class="cmd">cli-jentic score</span> <span class="arg">path/to/openapi.yaml</span><br>
         <br>
         <span class="comment"># Try the built-in demo</span><br>
-        <span class="cmd">cli-jentic demo</span>
+        <span class="cmd">cli-jentic demo</span><br>
+        <br>
+        <span class="comment"># Score a CLI tool with clitic</span><br>
+        <span class="cmd">cli-jentic clitic score</span> <span class="arg">git</span>
       </div>
       <div id="tab-uv" class="code-block" style="display:none">
         <span class="comment"># Editable install from Git (contributors)</span><br>

@@ -53,8 +53,10 @@ def score(
 # and after sandbox is importable (no circular deps since sandbox imports
 # from scorecard.parser / scorecard.dimensions, not scorecard.cli).
 from sandbox.cli import sandbox_app  # noqa: E402
+from clitic.cli import clitic_app  # noqa: E402
 
 app.add_typer(sandbox_app, name="sandbox")
+app.add_typer(clitic_app, name="clitic")
 
 
 @app.command()
