@@ -1,14 +1,14 @@
 [project]
 name = "cli-jentic"
-version = "0.1.2"
-description = "OpenAPI scoring and sandbox CLI for AI-ready APIs — cli-jentic"
+version = "0.1.3"
+description = "OpenAPI scoring, sandbox, and CLI tool scoring for AI-ready agents — cli-jentic"
 readme = "README.md"
 requires-python = ">=3.11"
 license = { text = "MIT" }
 authors = [{ name = "SheepSeb" }]
 keywords = [
     "openapi", "api", "ai", "agents", "scorecard",
-    "mock-server", "sandbox", "llm", "agentic",
+    "mock-server", "sandbox", "llm", "agentic", "cli", "clitic",
 ]
 classifiers = [
     "Development Status :: 3 - Alpha",
@@ -43,7 +43,7 @@ cli-jentic = "scorecard.cli:app"
 
 # ── Build ──────────────────────────────────────────────────────────────────────
 [tool.hatch.build.targets.wheel]
-packages = ["scorecard", "sandbox"]
+packages = ["scorecard", "sandbox", "clitic"]
 
 [tool.hatch.build.targets.wheel.force-include]
 "sandbox/data/sample_spec.yaml" = "sandbox/data/sample_spec.yaml"
