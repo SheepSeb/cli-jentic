@@ -11,7 +11,7 @@ from .scorer import run
 from . import report as reporter
 
 app = typer.Typer(
-    name="cli-jentic",
+    name="specscore",
     help="Score an OpenAPI spec for AI-readiness across 6 dimensions.",
     add_completion=False,
 )

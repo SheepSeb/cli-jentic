@@ -1,10 +1,10 @@
 [project]
-name = "cli-jentic"
-version = "0.1.3"
-description = "OpenAPI scoring, sandbox, and CLI tool scoring for AI-ready agents — cli-jentic"
+name = "specscore"
+version = "0.1.4"
+description = "OpenAPI scoring, sandbox, and CLI tool scoring for AI-ready agents — specscore"
 readme = "README.md"
 requires-python = ">=3.11"
-license = { text = "MIT" }
+license = { text = "Apache-2.0" }
 authors = [{ name = "SheepSeb" }]
 keywords = [
     "openapi", "api", "ai", "agents", "scorecard",
@@ -14,7 +14,7 @@ classifiers = [
     "Development Status :: 3 - Alpha",
     "Environment :: Console",
     "Intended Audience :: Developers",
-    "License :: OSI Approved :: MIT License",
+    "License :: OSI Approved :: Apache Software License",
     "Operating System :: OS Independent",
     "Programming Language :: Python :: 3",
     "Programming Language :: Python :: 3.11",
@@ -34,12 +34,12 @@ dependencies = [
 ]
 
 [project.urls]
-Homepage      = "https://sheepseb.github.io/cli-jentic"
-Repository    = "https://github.com/SheepSeb/cli-jentic"
-"Bug Tracker" = "https://github.com/SheepSeb/cli-jentic/issues"
+Homepage      = "https://sheepseb.github.io/specscore"
+Repository    = "https://github.com/SheepSeb/specscore"
+"Bug Tracker" = "https://github.com/SheepSeb/specscore/issues"
 
 [project.scripts]
-cli-jentic = "scorecard.cli:app"
+specscore = "scorecard.cli:app"
 
 # ── Build ──────────────────────────────────────────────────────────────────────
 [tool.hatch.build.targets.wheel]

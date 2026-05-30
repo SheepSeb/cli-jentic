@@ -41,7 +41,7 @@ jobs:
     runs-on: ubuntu-latest
     environment:
       name: pypi
-      url: https://pypi.org/project/cli-jentic/
+      url: https://pypi.org/project/specscore/
     steps:
       - name: Download build artifacts
         uses: actions/download-artifact@v4

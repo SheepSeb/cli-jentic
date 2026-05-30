@@ -1,4 +1,4 @@
-# cli-jentic
+# specscore
 
 A CLI tool that scores OpenAPI specs for AI-readiness across 6 dimensions — giving APIs a letter grade and actionable recommendations so they work well with AI agents and LLM tooling.
 
@@ -18,14 +18,14 @@ pip install -e .
 
 ```bash
 # Score an OpenAPI spec
-cli-jentic score path/to/openapi.yaml
+specscore score path/to/openapi.yaml
 
 # Output as JSON
-cli-jentic score path/to/openapi.yaml --json
+specscore score path/to/openapi.yaml --json
 
 # Run against the built-in sample spec to see how scoring works
-cli-jentic demo
-cli-jentic demo --json
+specscore demo
+specscore demo --json
 ```
 
 ### Sandbox
@@ -34,16 +34,16 @@ The sandbox spins up a local mock server from your spec and auto-probes every en
 
 ```bash
 # Start a persistent mock server (press Ctrl+C to stop)
-cli-jentic sandbox start path/to/openapi.yaml
-cli-jentic sandbox start path/to/openapi.yaml --port 9000
+specscore sandbox start path/to/openapi.yaml
+specscore sandbox start path/to/openapi.yaml --port 9000
 
 # Probe all endpoints and get a report
-cli-jentic sandbox probe path/to/openapi.yaml
-cli-jentic sandbox probe path/to/openapi.yaml --json
+specscore sandbox probe path/to/openapi.yaml
+specscore sandbox probe path/to/openapi.yaml --json
 
 # Run against the built-in sample spec
-cli-jentic sandbox demo
-cli-jentic sandbox demo --json
+specscore sandbox demo
+specscore sandbox demo --json
 ```
 
 The `probe` command:
@@ -87,7 +87,7 @@ Each spec is evaluated across 6 weighted dimensions:
 ## Example output
 
 ```
-╭─ cli-jentic · OpenAPI AI readiness ───────────────────────────╮
+╭─ specscore · OpenAPI AI readiness ───────────────────────────╮
 │  Task Manager API  v1.0.0                                      │
 │  sample_spec.yaml                                              │
 │                                                                │
@@ -117,7 +117,7 @@ Issues & Recommendations
 Pass `--json` to get a machine-readable report:
 
 ```bash
-cli-jentic score openapi.yaml --json | jq '.overall_score'
+specscore score openapi.yaml --json | jq '.overall_score'
 ```
 
 ```json
@@ -147,3 +147,14 @@ uv pip install -e .
 # Run directly without installing
 python main.py score path/to/spec.yaml
 ```
+
+## License
+
+The scorecard scoring model in this project (`scorecard/` package) is derived from the
+[Jentic API AI-Readiness Framework (JAIRF)](https://jentic.com), which is licensed under
+the Apache License, Version 2.0. See the [NOTICE](NOTICE) file for the required upstream
+attribution.
+
+Original contributions (sandbox, clitic, GitHub Pages site) are copyright (c) 2025-2026
+SheepSeb. The project as a whole is distributed under the Apache License, Version 2.0 —
+see the [LICENSE](LICENSE) file for details.

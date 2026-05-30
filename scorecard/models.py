@@ -1,3 +1,6 @@
+# Derived from the Jentic API AI-Readiness Framework (JAIRF)
+# Copyright (c) 2025-2026 Jentic. Licensed under the Apache License, Version 2.0.
+# Modifications copyright (c) 2025-2026 SheepSeb.
 from __future__ import annotations
 from typing import Literal
 from pydantic import BaseModel, computed_field

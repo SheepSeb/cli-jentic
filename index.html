@@ -3,12 +3,12 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="application-name" content="cli-jentic" />
-  <meta name="description" content="cli-jentic scores your OpenAPI specs for AI agents — letter grades, sandbox probes, JSON output, CI-ready exit codes." />
-  <meta property="og:title" content="cli-jentic — OpenAPI AI readiness for agents" />
-  <meta property="og:description" content="cli-jentic scores your OpenAPI specs for AI agents — letter grades, sandbox probes, JSON output, CI-ready exit codes." />
+  <meta name="application-name" content="specscore" />
+  <meta name="description" content="specscore scores your OpenAPI specs for AI agents — letter grades, sandbox probes, JSON output, CI-ready exit codes." />
+  <meta property="og:title" content="specscore — OpenAPI AI-readiness scorer for agents" />
+  <meta property="og:description" content="specscore scores your OpenAPI specs for AI agents — letter grades, sandbox probes, JSON output, CI-ready exit codes." />
   <meta property="og:type" content="website" />
-  <title>cli-jentic — OpenAPI AI readiness for agents</title>
+  <title>specscore — OpenAPI AI readiness for agents</title>
 
   <!-- Google Analytics GA4 — replace G-XXXXXXXXXX with your Measurement ID -->
   <!-- Get one free at: https://analytics.google.com → Admin → Create Property -->
@@ -696,7 +696,7 @@
 
 <!-- NAV -->
 <nav>
-  <span class="nav-logo">$ cli-jentic</span>
+  <span class="nav-logo">$ specscore</span>
   <button class="hamburger" aria-label="Toggle menu"
     onclick="this.closest('nav').querySelector('.nav-links').classList.toggle('open')">
     <span></span><span></span><span></span>
@@ -706,25 +706,24 @@
     <a href="#clitic"     onclick="this.closest('.nav-links').classList.remove('open')"
        style="color:var(--pink);font-weight:600">(*)&nbsp;clitic</a>
     <a href="#dimensions" onclick="this.closest('.nav-links').classList.remove('open')">Dimensions</a>
-    <a href="#compare"    onclick="this.closest('.nav-links').classList.remove('open')">vs Jentic</a>
     <a href="#install"    onclick="this.closest('.nav-links').classList.remove('open')">Install</a>
     <a href="#contact"    onclick="this.closest('.nav-links').classList.remove('open')">Contact</a>
-    <a href="https://github.com/SheepSeb/cli-jentic" target="_blank" rel="noopener"
+    <a href="https://github.com/SheepSeb/specscore" target="_blank" rel="noopener"
        onclick="track('nav','github')">GitHub</a>
   </div>
 </nav>
 
 <!-- HERO -->
 <div class="hero">
-  <div class="badge">cli-jentic</div>
+  <div class="badge">specscore</div>
   <h1>Is your API ready for<br><span>AI agents?</span></h1>
   <p class="hero-sub">
-    <strong>cli-jentic</strong> scores your OpenAPI spec across 6 dimensions and gives it a letter grade —
+    <strong>specscore</strong> scores your OpenAPI spec across 6 dimensions and gives it a letter grade —
     so you know exactly what to fix before connecting it to an LLM.
   </p>
   <div class="cta-group">
     <a class="btn btn-primary"    href="#install" onclick="track('hero','get-started')">Get Started</a>
-    <a class="btn btn-secondary"  href="https://github.com/SheepSeb/cli-jentic"
+    <a class="btn btn-secondary"  href="https://github.com/SheepSeb/specscore"
        target="_blank" rel="noopener" onclick="track('hero','view-github')">View on GitHub</a>
   </div>
 </div>
@@ -736,11 +735,11 @@
       <div class="dot dot-red"></div>
       <div class="dot dot-yellow"></div>
       <div class="dot dot-green"></div>
-      <span class="terminal-title">cli-jentic score openapi.yaml</span>
+      <span class="terminal-title">specscore score openapi.yaml</span>
     </div>
     <div class="terminal-body">
-      <div><span class="term-prompt">$</span> <span class="term-cmd">cli-jentic score openapi.yaml</span></div>
-      <div class="term-box">╭─ cli-jentic · OpenAPI AI readiness ───────────────╮
+      <div><span class="term-prompt">$</span> <span class="term-cmd">specscore score openapi.yaml</span></div>
+      <div class="term-box">╭─ specscore · OpenAPI AI readiness ───────────────╮
 │  Task Manager API  v1.0.0                          │
 │  Overall Score: <span class="term-grade-f">42.3</span>/100  Grade: <span class="term-grade-f">F</span>               │
 ╰────────────────────────────────────────────────────╯</div>
@@ -756,7 +755,7 @@
       <div class="term-out">  <span style="color:#d29922">!</span> 5/6 operations have no documented error responses</div>
       <div class="term-out">  <span style="color:#f78166">✗</span> Security schemes defined but operations not secured</div>
       <br>
-      <div><span class="term-prompt">$</span> <span class="term-cmd">cli-jentic score openapi.yaml <span class="term-arg">--json</span> | jq <span class="term-arg">'.overall_score'</span></span></div>
+      <div><span class="term-prompt">$</span> <span class="term-cmd">specscore score openapi.yaml <span class="term-arg">--json</span> | jq <span class="term-arg">'.overall_score'</span></span></div>
       <div class="term-out">42.3</div>
     </div>
   </div>
@@ -764,7 +763,8 @@
 
 <!-- FEATURES -->
 <section id="features" class="page-section">
-  <div class="section-label">Why cli-jentic</div>
+  <div class="section-label">Why specscore</div>
+
   <h2>Ship APIs that AI agents<br>can actually use</h2>
   <p class="subtitle">Most OpenAPI specs are written for humans. AI agents have different needs — and most specs fail silently.</p>
   <div class="grid grid-3">
@@ -827,11 +827,11 @@
         <div class="dot dot-red"></div>
         <div class="dot dot-yellow"></div>
         <div class="dot dot-green"></div>
-        <span class="terminal-title">cli-jentic clitic demo</span>
+        <span class="terminal-title">specscore clitic demo</span>
       </div>
       <div class="terminal-body">
 
-        <div><span class="term-prompt">$</span> <span class="term-cmd">cli-jentic clitic <span class="term-pink">demo</span></span></div>
+        <div><span class="term-prompt">$</span> <span class="term-cmd">specscore clitic <span class="term-pink">demo</span></span></div>
         <br>
 
         <!-- animated phase lines -->
@@ -902,10 +902,10 @@
     <div class="clitic-try">
       <div style="font-size:.75rem;font-weight:700;text-transform:uppercase;letter-spacing:.12em;color:var(--pink);margin-bottom:.75rem">Try it</div>
       <div style="display:flex;flex-direction:column;gap:.4rem;font-family:'SF Mono','Fira Code',monospace;font-size:.82rem">
-        <div><span class="term-prompt">$</span> <span class="term-cmd">cli-jentic clitic score <span class="term-pink">git</span></span></div>
-        <div><span class="term-prompt">$</span> <span class="term-cmd">cli-jentic clitic score <span class="term-pink">gh</span></span></div>
-        <div><span class="term-prompt">$</span> <span class="term-cmd">cli-jentic clitic score <span class="term-pink">curl</span></span></div>
-        <div><span class="term-prompt">$</span> <span class="term-cmd">cli-jentic clitic score <span class="term-pink">your-tool</span></span></div>
+        <div><span class="term-prompt">$</span> <span class="term-cmd">specscore clitic score <span class="term-pink">git</span></span></div>
+        <div><span class="term-prompt">$</span> <span class="term-cmd">specscore clitic score <span class="term-pink">gh</span></span></div>
+        <div><span class="term-prompt">$</span> <span class="term-cmd">specscore clitic score <span class="term-pink">curl</span></span></div>
+        <div><span class="term-prompt">$</span> <span class="term-cmd">specscore clitic score <span class="term-pink">your-tool</span></span></div>
       </div>
     </div>
   </div>
@@ -964,97 +964,6 @@
   </div>
 </section>
 
-<!-- COMPARISON -->
-<section id="compare" class="page-section">
-  <div class="section-label">Comparison</div>
-  <h2>cli-jentic vs Jentic</h2>
-  <p class="subtitle">Both tools aim to make APIs work better with AI — but they solve fundamentally different problems at different points in your workflow.</p>
-
-  <!-- TABLE — shown on tablet/desktop -->
-  <div class="compare-table-wrap">
-    <table>
-      <thead>
-        <tr>
-          <th style="width:34%">Feature</th>
-          <th class="hl" style="width:33%">cli-jentic</th>
-          <th style="width:33%">Jentic</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr><td class="feat">Primary purpose</td><td class="yes"><span class="ck"></span>Score &amp; improve OpenAPI specs for AI-readiness</td><td class="par"><span class="da"></span>Discover &amp; execute APIs at runtime for AI agents</td></tr>
-        <tr><td class="feat">When you use it</td><td class="yes"><span class="ck"></span>Before &amp; during API development (design time)</td><td class="no"><span class="cx"></span>When building AI agents that call APIs (runtime)</td></tr>
-        <tr><td class="feat">Input</td><td class="yes"><span class="ck"></span>Local OpenAPI / Swagger YAML or JSON file</td><td class="no"><span class="cx"></span>Natural language query to discover APIs</td></tr>
-        <tr><td class="feat">Output</td><td class="yes"><span class="ck"></span>Scored report with letter grade + fixes</td><td class="no"><span class="cx"></span>Executable workflow / API call for an agent</td></tr>
-        <tr><td class="feat">Open Source</td><td class="yes"><span class="ck"></span>Fully open source (MIT)</td><td class="par"><span class="da"></span>SDK open source, platform is SaaS</td></tr>
-        <tr><td class="feat">Runs locally</td><td class="yes"><span class="ck"></span>100% offline — spec never leaves your machine</td><td class="no"><span class="cx"></span>Requires internet access to Jentic cloud registry</td></tr>
-        <tr><td class="feat">CI/CD integration</td><td class="yes"><span class="ck"></span>Exit codes + JSON output, drop into any pipeline</td><td class="no"><span class="cx"></span>Not designed for CI quality gates</td></tr>
-        <tr><td class="feat">Actionable fix guidance</td><td class="yes"><span class="ck"></span>Exact JSON path + plain-English recommendation</td><td class="no"><span class="cx"></span>No spec improvement guidance</td></tr>
-        <tr><td class="feat">Multi-dimension scoring</td><td class="yes"><span class="ck"></span>6 weighted dimensions with per-dimension grades</td><td class="no"><span class="cx"></span>No quality scoring model</td></tr>
-        <tr><td class="feat">API execution / calling</td><td class="no"><span class="cx"></span>Analysis only — does not call your API</td><td class="yes"><span class="ck"></span>Core feature — finds and executes API calls</td></tr>
-        <tr><td class="feat">API registry / discovery</td><td class="no"><span class="cx"></span>Works on a single spec you provide</td><td class="yes"><span class="ck"></span>Searches a large registry of third-party APIs</td></tr>
-        <tr><td class="feat">Requires account</td><td class="yes"><span class="ck"></span>No — zero signup, just install and run</td><td class="par"><span class="da"></span>Free tier available, full registry needs API key</td></tr>
-        <tr><td class="feat">Best used by</td><td class="yes"><span class="ck"></span>API developers, platform engineers, DevOps</td><td class="no"><span class="cx"></span>AI agent developers integrating third-party APIs</td></tr>
-      </tbody>
-    </table>
-  </div>
-
-  <!-- CARDS — shown on mobile only -->
-  <div class="compare-cards">
-    <div class="cmp-card">
-      <div class="cmp-card-header">Primary purpose &amp; when to use</div>
-      <div class="cmp-row">
-        <div class="cmp-cell"><div class="cmp-cell-label acc">cli-jentic</div><span class="cmp-yes">✓ Score &amp; improve OpenAPI specs (design time)</span></div>
-        <div class="cmp-cell"><div class="cmp-cell-label mut">Jentic</div><span class="cmp-par">~ Discover &amp; execute APIs (runtime)</span></div>
-      </div>
-    </div>
-    <div class="cmp-card">
-      <div class="cmp-card-header">Input / Output</div>
-      <div class="cmp-row">
-        <div class="cmp-cell"><div class="cmp-cell-label acc">cli-jentic</div><span class="cmp-yes">✓ Local YAML/JSON → letter grade + fixes</span></div>
-        <div class="cmp-cell"><div class="cmp-cell-label mut">Jentic</div><span class="cmp-no">✗ Natural language → executable API call</span></div>
-      </div>
-    </div>
-    <div class="cmp-card">
-      <div class="cmp-card-header">Open Source &amp; local</div>
-      <div class="cmp-row">
-        <div class="cmp-cell"><div class="cmp-cell-label acc">cli-jentic</div><span class="cmp-yes">✓ Fully open source, 100% offline</span></div>
-        <div class="cmp-cell"><div class="cmp-cell-label mut">Jentic</div><span class="cmp-par">~ SDK open source, needs internet</span></div>
-      </div>
-    </div>
-    <div class="cmp-card">
-      <div class="cmp-card-header">CI/CD &amp; fix guidance</div>
-      <div class="cmp-row">
-        <div class="cmp-cell"><div class="cmp-cell-label acc">cli-jentic</div><span class="cmp-yes">✓ Exit codes, JSON output, actionable paths</span></div>
-        <div class="cmp-cell"><div class="cmp-cell-label mut">Jentic</div><span class="cmp-no">✗ Not designed for CI</span></div>
-      </div>
-    </div>
-    <div class="cmp-card">
-      <div class="cmp-card-header">API execution &amp; discovery</div>
-      <div class="cmp-row">
-        <div class="cmp-cell"><div class="cmp-cell-label acc">cli-jentic</div><span class="cmp-no">✗ Analysis only</span></div>
-        <div class="cmp-cell"><div class="cmp-cell-label mut">Jentic</div><span class="cmp-yes">✓ Executes APIs, large registry</span></div>
-      </div>
-    </div>
-    <div class="cmp-card">
-      <div class="cmp-card-header">Account required</div>
-      <div class="cmp-row">
-        <div class="cmp-cell"><div class="cmp-cell-label acc">cli-jentic</div><span class="cmp-yes">✓ Zero signup needed</span></div>
-        <div class="cmp-cell"><div class="cmp-cell-label mut">Jentic</div><span class="cmp-par">~ Free tier, API key for full access</span></div>
-      </div>
-    </div>
-  </div>
-
-  <br>
-  <div class="card" style="background:rgba(88,166,255,.06);border-color:rgba(88,166,255,.3)">
-    <h3 style="color:var(--accent);margin-bottom:.5rem">They're complementary, not competing</h3>
-    <p style="color:var(--muted)">
-      Use <strong style="color:var(--text)">cli-jentic</strong> to verify your OpenAPI spec is high-quality and AI-ready.
-      Then use <strong style="color:var(--text)">Jentic</strong> to let agents discover and call it at runtime.
-      A higher cli-jentic grade means Jentic agents can use your API more reliably.
-    </p>
-  </div>
-</section>
-
 <!-- INSTALL -->
 <section id="install" class="page-section">
   <div class="section-label">Get started</div>
@@ -1065,10 +974,10 @@
     <div class="pypi-hero-badge">Python Package Index</div>
     <h3 class="pypi-hero-title">Install from PyPI</h3>
     <p class="pypi-hero-sub">Official release — same tool as on this site. One command and you are ready to score specs.</p>
-    <div class="pypi-hero-command">pip install cli-jentic</div>
+    <div class="pypi-hero-command">pip install specscore</div>
     <div class="pypi-hero-actions">
-      <a class="btn btn-primary" href="https://pypi.org/project/cli-jentic/" target="_blank" rel="noopener"
-         onclick="track('install','pypi-project-page')">Open cli-jentic on PyPI</a>
+      <a class="btn btn-primary" href="https://pypi.org/project/specscore/" target="_blank" rel="noopener"
+         onclick="track('install','pypi-project-page')">Open specscore on PyPI</a>
       <a class="btn btn-secondary" href="#install-alternatives" onclick="track('install','pypi-scroll-more')">More install options</a>
     </div>
   </div>
@@ -1082,40 +991,40 @@
       </div>
       <div id="tab-pypi" class="code-block">
         <span class="comment"># Install from PyPI</span><br>
-        <span class="cmd">pip install</span> <span class="arg">cli-jentic</span><br>
+        <span class="cmd">pip install</span> <span class="arg">specscore</span><br>
         <br>
         <span class="comment"># Or with uv</span><br>
-        <span class="cmd">uv pip install</span> <span class="arg">cli-jentic</span><br>
+        <span class="cmd">uv pip install</span> <span class="arg">specscore</span><br>
         <br>
         <span class="comment"># Score your spec</span><br>
-        <span class="cmd">cli-jentic score</span> <span class="arg">path/to/openapi.yaml</span><br>
+        <span class="cmd">specscore score</span> <span class="arg">path/to/openapi.yaml</span><br>
         <br>
         <span class="comment"># Try the built-in demo</span><br>
-        <span class="cmd">cli-jentic demo</span><br>
+        <span class="cmd">specscore demo</span><br>
         <br>
         <span class="comment"># Score a CLI tool with clitic</span><br>
-        <span class="cmd">cli-jentic clitic score</span> <span class="arg">git</span>
+        <span class="cmd">specscore clitic score</span> <span class="arg">git</span>
       </div>
       <div id="tab-uv" class="code-block" style="display:none">
         <span class="comment"># Editable install from Git (contributors)</span><br>
-        <span class="cmd">uv pip install</span> <span class="arg">-e git+https://github.com/SheepSeb/cli-jentic</span><br>
+        <span class="cmd">uv pip install</span> <span class="arg">-e git+https://github.com/SheepSeb/specscore</span><br>
         <br>
         <span class="comment"># Score your spec</span><br>
-        <span class="cmd">cli-jentic score</span> <span class="arg">path/to/openapi.yaml</span><br>
+        <span class="cmd">specscore score</span> <span class="arg">path/to/openapi.yaml</span><br>
         <br>
         <span class="comment"># Try the built-in demo</span><br>
-        <span class="cmd">cli-jentic demo</span>
+        <span class="cmd">specscore demo</span>
       </div>
       <div id="tab-pip" class="code-block" style="display:none">
         <span class="comment"># Editable install from Git (contributors)</span><br>
-        <span class="cmd">git clone</span> <span class="arg">https://github.com/SheepSeb/cli-jentic</span><br>
-        <span class="cmd">pip install</span> <span class="arg">-e ./cli-jentic</span><br>
+        <span class="cmd">git clone</span> <span class="arg">https://github.com/SheepSeb/specscore</span><br>
+        <span class="cmd">pip install</span> <span class="arg">-e ./specscore</span><br>
         <br>
         <span class="comment"># Score your spec</span><br>
-        <span class="cmd">cli-jentic score</span> <span class="arg">path/to/openapi.yaml</span><br>
+        <span class="cmd">specscore score</span> <span class="arg">path/to/openapi.yaml</span><br>
         <br>
         <span class="comment"># JSON output for CI</span><br>
-        <span class="cmd">cli-jentic score</span> <span class="arg">openapi.yaml --json</span>
+        <span class="cmd">specscore score</span> <span class="arg">openapi.yaml --json</span>
       </div>
     </div>
     <div>
@@ -1139,7 +1048,7 @@
         <hr style="margin-top:1.1rem">
         <p style="color:var(--muted);font-size:.82rem;margin-top:.7rem">
           Gate your CI pipeline on API quality:<br>
-          <code style="color:var(--accent);font-size:.8rem">cli-jentic score spec.yaml || exit 1</code>
+          <code style="color:var(--accent);font-size:.8rem">specscore score spec.yaml || exit 1</code>
         </p>
       </div>
     </div>
@@ -1159,17 +1068,17 @@
       </span>
       <div><div class="cl-title">GitHub</div><div class="cl-sub">@SheepSeb</div></div>
     </a>
-    <a class="contact-link" href="https://github.com/SheepSeb/cli-jentic/issues/new"
+    <a class="contact-link" href="https://github.com/SheepSeb/specscore/issues/new"
        target="_blank" rel="noopener" onclick="track('contact','open-issue')">
       <span class="cl-icon">🐛</span>
       <div><div class="cl-title">Open an Issue</div><div class="cl-sub">Bug reports &amp; feature requests</div></div>
     </a>
-    <a class="contact-link" href="https://github.com/SheepSeb/cli-jentic/discussions"
+    <a class="contact-link" href="https://github.com/SheepSeb/specscore/discussions"
        target="_blank" rel="noopener" onclick="track('contact','discussions')">
       <span class="cl-icon">💬</span>
       <div><div class="cl-title">Discussions</div><div class="cl-sub">Questions &amp; ideas</div></div>
     </a>
-    <a class="contact-link" href="https://github.com/SheepSeb/cli-jentic/fork"
+    <a class="contact-link" href="https://github.com/SheepSeb/specscore/fork"
        target="_blank" rel="noopener" onclick="track('contact','fork')">
       <span class="cl-icon">🍴</span>
       <div><div class="cl-title">Fork &amp; Contribute</div><div class="cl-sub">PRs welcome</div></div>
@@ -1190,10 +1099,15 @@
 <!-- FOOTER -->
 <footer>
   <p>
-    <strong>cli-jentic</strong> — Open source under MIT. Built for the age of AI agents.<br>
-    <a href="https://github.com/SheepSeb/cli-jentic" onclick="track('footer','github')">GitHub</a> &nbsp;·&nbsp;
-    <a href="https://github.com/SheepSeb/cli-jentic/issues" onclick="track('footer','issues')">Issues</a> &nbsp;·&nbsp;
-    <a href="https://github.com/SheepSeb/cli-jentic/blob/web/README.md" onclick="track('footer','docs')">Docs</a>
+    <strong>specscore</strong> — Open source under Apache 2.0. Built for the age of AI agents.<br>
+    <a href="https://github.com/SheepSeb/specscore" onclick="track('footer','github')">GitHub</a> &nbsp;·&nbsp;
+    <a href="https://github.com/SheepSeb/specscore/issues" onclick="track('footer','issues')">Issues</a> &nbsp;·&nbsp;
+    <a href="https://github.com/SheepSeb/specscore/blob/web/README.md" onclick="track('footer','docs')">Docs</a>
+  </p>
+  <p style="margin-top:.75rem;font-size:.75rem;color:#555">
+    The scorecard scoring model is derived from the
+    <a href="https://jentic.com" target="_blank" rel="noopener">Jentic API AI-Readiness Framework (JAIRF)</a>
+    — Copyright &copy; 2025-2026 Jentic, Apache 2.0.
   </p>
 </footer>
 

@@ -1,0 +1,14 @@
+Jentic API AI-Readiness Framework (JAIRF)
+Copyright (c) 2025-2026 Jentic
+Jentic API AI-Readiness Framework (JAIRF) is licensed under Apache 2.0 license.
+
+cli-jentic is a derivative CLI implementation of the Jentic API AI-Readiness
+Framework (JAIRF). The scorecard scoring model, dimension definitions, and
+grading logic in the scorecard/ package are derived from JAIRF.
+
+Original contributions in cli-jentic (sandbox/, clitic/, and the GitHub Pages
+site) are copyright (c) 2025-2026 SheepSeb and are also made available under
+the Apache License, Version 2.0.
+
+You may obtain a copy of the Apache License at:
+    http://www.apache.org/licenses/LICENSE-2.0
